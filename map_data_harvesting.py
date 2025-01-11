@@ -17,15 +17,15 @@ fig, ax = plt.subplots(figsize=(6, 6), subplot_kw={'projection': proj})
 ###### VESSELS ######
 # Define the directory for vessel transect .csv files
 directory = r'C:\Users\G to the A\PycharmProjects\Paper\vessels'
-# Iteration in this directory
-for file in os.scandir(directory):
-	if file.is_file():
-		# Extract data from .csv file
-		data=extract_vessel_data(os.path.join(directory, file))
-		# Create object of class vessel
-		v=Vessel(data[0],data[1],data[2])
-		# plot the transect
-		v.plot_transect(a=ax)
+all_files = os.listdir(directory)
+csv_files = [f for f in all_files if f.endswith('.csv')]
+for file in csv_files:
+	# Extract data from .csv file
+	data=extract_vessel_data(os.path.join(directory, file))
+	# Create object of class vessel
+	v=Vessel(data[0],data[1],data[2])
+	# plot the transect
+	v.plot_transect(a=ax)
 
 ###### GLIDER ######
 

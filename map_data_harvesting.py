@@ -78,6 +78,8 @@ ax.add_feature(cfeature.LAND, facecolor='lightgray')
 ax.add_feature(cfeature.OCEAN, facecolor='lightblue')
 # Show rivers
 ax.add_feature(cfeature.RIVERS)
+# Borders
+ax.add_feature(cfeature.BORDERS, linestyle=':')
 
 # Add title and legend
 ax.set_title('Vessel Transect and Glider Path in the Bay of Biscay')

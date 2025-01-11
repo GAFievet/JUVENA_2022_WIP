@@ -1,8 +1,12 @@
-import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
 class Vessel:
 	def __init__(self,longitudes,latitudes,time_stamps):
+		"""
+		:param longitudes: list of longitudes of the vessel
+		:param latitudes: list of latitudes of the vessel
+		:param time_stamps: list of datetime related to each coordinates of the vessel
+		"""
 		self.lons=longitudes
 		self.lats=latitudes
 		self.time=time_stamps
@@ -22,5 +26,4 @@ class Vessel:
 		     a: The matplotlib ax object to plot on.
 		 """
 		a.plot(self.lons,self.lats,transform=ccrs.Geodetic(), label=self.time[0].strftime("%d/%m/%Y"), ls='-',
-		              lw='1',
-		            marker=self.orientation, markevery=(0,-1))
+		       lw='1', marker=self.orientation, markevery=(0,-1))

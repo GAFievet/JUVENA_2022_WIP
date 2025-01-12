@@ -4,7 +4,7 @@ from datetime_formating import combine_date_time
 
 def extract_vessel_data(file):
 	"""
-	:param file: string of the path of an Excel file containing  vessel transects data
+	:param file: string of the path of an Excel extraction_file containing  vessel transects data
 	:return: list [longitudes,latitudes,time_stamps] (i.e., args for plot_vessel_transect class)
 	"""
 	df = pd.read_csv(file)

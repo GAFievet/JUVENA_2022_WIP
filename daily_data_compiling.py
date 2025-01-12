@@ -10,7 +10,7 @@ dfs = []
 all_files = os.listdir(directory)
 csv_files = [f for f in all_files if f.endswith('.csv')]
 for file in csv_files:
-	# append file
+	# append extraction_file
 	df_daily = pd.read_csv(os.path.join(directory, file))
 	dfs.append(df_daily)
 

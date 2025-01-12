@@ -3,9 +3,9 @@ from datetime_formating import combine_date_time
 import pickle
 
 
-def extract_glider_data(file):
-	# Read file
-	df = pd.read_csv(file)
+def extract_glider_data(extraction_file: str, saving_path: str):
+	# Read extraction_file
+	df = pd.read_csv(extraction_file)
 	# Extract longitudes, latitudes, dates and times
 	glider_mat = [df['Longitude'].tolist(), df['Latitude'].tolist(), df['GPS_date'].tolist(), df['GPS_time'].tolist()]
 	# Combine dates and times into datetime object
@@ -20,12 +20,15 @@ def extract_glider_data(file):
 	# unzip to a matrix sorted in datetime order
 	glider_mat[0], glider_mat[1], glider_mat[2] = zip(*zipped)
 
-	# Save the matrix to a file
-	with open('glider_GPS.pkl', 'wb') as f:
+	# Save the matrix to an extraction_file
+	with open(saving_path, 'wb') as f:
+		# noinspection PyTypeChecker
 		pickle.dump(glider_mat, f)
 
 	return glider_mat
 
 
 if __name__ == "__main__":
-	glider_data = extract_glider_data(r'C:\Users\G to the A\PycharmProjects\Paper\glider\Glider.gps.csv')
+	file=r'C:\Users\G to the A\PycharmProjects\Paper\glider\Glider.gps.csv'
+	save_path=r'C:\Users\G to the A\PycharmProjects\Paper\glider\glider_GPS.pkl'
+	glider_data = extract_glider_data(file,save_path)

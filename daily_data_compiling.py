@@ -1,19 +1,18 @@
 import os
 import pandas as pd
 
-def compiling(directory):
-	"""
-	:param directory: directory where to find .csv files to compile
-	:return: a compiled dataframe
-	"""
-	dfs=[]
-	all_files = os.listdir(directory)
-	csv_files = [f for f in all_files if f.endswith('.csv')]
-	for file in csv_files:
-			# append file
-			df = pd.read_csv(os.path.join(directory, file))
-			dfs.append(df)
+"""
+Compiles daily glider GPS .csv files
+"""
 
-	combined_df = pd.concat(dfs, ignore_index=True)
+directory = r'C:\Users\G to the A\PycharmProjects\Paper\glider\Daily'
+dfs = []
+all_files = os.listdir(directory)
+csv_files = [f for f in all_files if f.endswith('.csv')]
+for file in csv_files:
+	# append file
+	df_daily = pd.read_csv(os.path.join(directory, file))
+	dfs.append(df_daily)
 
-	return combined_df
+combined_df = pd.concat(dfs, ignore_index = True)
+combined_df.to_csv(r'C:\Users\G to the A\PycharmProjects\Paper\glider\Glider.gps.csv', index = False)

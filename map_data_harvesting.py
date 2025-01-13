@@ -19,12 +19,13 @@ fig, ax = plt.subplots(figsize = (7, 7), subplot_kw = {'projection': proj})
 # Define the directory for vessel transect .csv files
 directory = r'C:\Users\G to the A\PycharmProjects\Paper\vessels'
 all_files = os.listdir(directory)
-csv_files = [f for f in all_files if f.endswith('.csv')]
-for file in csv_files:
-	# Extract data from .csv extraction_file
-	data = extract_vessel_data(os.path.join(directory, file))
+pkl_files = [f for f in all_files if f.endswith('.pkl')]
+for file in pkl_files:
+	# Get vessel data
+	with open(os.path.join(directory, file), 'rb') as f:
+		vessel_mat = pickle.load(f)
 	# Create object of class vessel
-	v = Vessel(data[0], data[1], data[2])
+	v = Vessel(vessel_mat[0], vessel_mat[1], vessel_mat[2])
 	# plot the transect
 	v.plot_transect(a = ax)
 
@@ -50,7 +51,7 @@ ax.text(-2.92337 + offset, 43.25694, 'Bilbao', transform = ccrs.Geodetic(), font
 # Plot Pasaia on the map
 ax.plot(-1.92114, 43.32531, 'ko', markersize = 6, transform = ccrs.Geodetic())
 # Add a label
-ax.text(-1.92114 - offset, 43.32531 - offset, 'Pasaia', transform = ccrs.Geodetic(), fontsize = 10,
+ax.text(-1.92114 - offset, 43.32531 - 1.5 * offset, 'Pasaia', transform = ccrs.Geodetic(), fontsize = 10,
         horizontalalignment = 'right',
         verticalalignment = 'top')
 
@@ -79,7 +80,9 @@ ax.add_feature(cfeature.RIVERS)
 ax.add_feature(cfeature.BORDERS, linestyle = ':')
 
 # Add title and legend
-ax.set_title('Sampling effort during the JUVENA 2022 survey')
+# ax.set_title('Sampling effort during the JUVENA 2022 survey')
 ax.legend(loc = 'upper right')
+# Save fig
+plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\sampling_effort.png', transparent = True)
 # Show plot
 plt.show()

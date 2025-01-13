@@ -27,4 +27,4 @@ class Vessel:
 		     a: The matplotlib ax object to plot on.
 		 """
 		a.plot(self.lons, self.lats, transform = ccrs.Geodetic(), label = self.time[0].strftime("%d/%m/%Y"), ls = '-',
-		       lw = '1', marker = self.orientation, markevery = (0, -1))
+		       lw = '1', marker = self.orientation, markevery = [0, - 1])

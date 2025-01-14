@@ -1,6 +1,10 @@
 import cartopy.crs as ccrs
 import matplotlib.dates as mdates
-import matplotlib.ticker as mticker
+from datetime import datetime
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import pickle
+import matplotlib.pyplot as plt
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
 
 class Glider:
@@ -21,9 +25,6 @@ class Glider:
 		:return: plots the glider path with colour according to the time and adds a colorscale.
 		"""
 
-		# dt = (self.time[-1] - self.time[0])
-		# normalized_time = [(t - self.time[0]) / dt for t in self.time]
-
 		# Convert dates to matplotlib-compatible format
 		normalized_time = mdates.date2num(self.time)
 
@@ -32,7 +33,18 @@ class Glider:
 		               s = 10)
 
 		# Add a colorbar with a matching colormap
-		cbar = figure.colorbar(sc, ax = a, orientation = 'vertical')
+		cbar = figure.colorbar(sc, ax = a, fraction = 0.047, orientation = 'vertical')
+
+		# Data processing limits
+		# Define the target date
+		end = datetime(2022, 10, 7, 0, 0, 0).date() # Extract only the date part
+		try:
+			iend = next(i for i, dt in enumerate(self.time) if dt.date() == end)
+			iend = iend - 1
+		except StopIteration:
+			return "Iterration in glider_GPS extracted data issue"
+
+		# Set label to color bar
 		cbar.set_label('Time')
 
 		# Define ticks
@@ -42,5 +54,9 @@ class Glider:
 		# Set tick labels
 		cbar.set_ticklabels([mdates.num2date(tick).strftime("%d/%m/%Y") for tick in ticks])
 
+		# Create a rectangle to highlight the range
+		vmax=ticks[4]
+		cbar.ax.add_patch(plt.Rectangle((0, 0), 1, vmax , facecolor = 'none', edgecolor = 'red', linewidth
+		= 2))
 # Plot the path as a line
 # a.plot(self.lons, self.lats, transform = ccrs.Geodetic(), c = 'k', ls = '-', lw = 0.5)

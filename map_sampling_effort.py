@@ -6,8 +6,7 @@ import os
 import pickle
 
 from Glider_class import Glider
-from vessel_data_extraction import extract_vessel_data
-from Vessel_class import Vessel
+from Vessel_echo_class import Vessel
 
 # Set up Mercator projection
 proj = ccrs.Mercator()
@@ -38,6 +37,7 @@ with open(glider_extract, 'rb') as f:
 
 glider = Glider(glider_GPS[0], glider_GPS[1], glider_GPS[2])
 glider.plot_transect(fig, ax)
+# glider.plot_limits_processing(ax)
 
 ###### CITIES ######
 # create a longitude offset so the name and the city point does not overlap
@@ -82,7 +82,9 @@ ax.add_feature(cfeature.BORDERS, linestyle = ':')
 # Add title and legend
 # ax.set_title('Sampling effort during the JUVENA 2022 survey')
 ax.legend(loc = 'upper right')
+
 # Save fig
-plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\sampling_effort.png', transparent = True)
+plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\sampling_effort.png', transparent = True,
+            bbox_inches = 'tight', pad_inches = 0.2)
 # Show plot
 plt.show()

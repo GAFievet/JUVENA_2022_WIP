@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from datetime_formating import combine_date_time
 import pickle
@@ -34,14 +36,19 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 		# Get fish species acronyms
 		species = df.columns[fish_i_f[0]:fish_i_f[1]]
 
+		# Import colors for pie charts
+		with open(r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\color_palette.pkl', 'rb') as f:
+			colors = pickle.load(f)
+
 		# Get fishes mass captured in a list and convert nan into 0 and name list aswell
 		masses_fished = haul_row.iloc[0, fish_i_f[0]:fish_i_f[1]].tolist()
 		species = [sp for sp, m in zip(species, masses_fished) if m != 0]
+		colors = [c.tolist() for c, m in zip(colors, masses_fished) if m != 0]
 		masses_fished = [float(m) for m in haul_row.iloc[0, fish_i_f[0]:fish_i_f[1]].tolist() if m != 0]
 
 		fishing_dict = {
 			'loc_i': loc_i, 'loc_f': loc_f, 'date': date, 'species': species,
-			'masses': masses_fished
+			'masses': masses_fished, 'color palette': colors
 		}
 		#  loc_i and loc_f are inital and end location of the vessel conducting the trawl formatted as [longitude,
 		#  latitude].
@@ -63,8 +70,22 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 if __name__ == "__main__":
 	save = r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing'
 	file_name = r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\fishing operatiions V6 V8 V10.xlsx'
-	example_dict = extract_vessel_fishing_data(file_name, save, 9048)
-	print(example_dict)
-	print(sum(example_dict['masses']))
-	print(type(example_dict['masses'][0]))
-	print(type(example_dict['species'][0]))
+	# example_dict = extract_vessel_fishing_data(file_name, save, 9048)
+	# with open(r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\haul_9048.pkl', 'rb') as f:
+	# 	example_dict = pickle.load(f)
+	# print(example_dict)
+	# print(type(example_dict))
+	# print(example_dict['color palette'])
+	# print(sum(example_dict['masses']))
+	# print(type(example_dict['masses'][0]))
+	# print(example_dict['species'])
+
+
+# cmap = plt.colormaps.get_cmap('hsv')
+# values = np.linspace(0, 1, 31)
+# # Get the colors from the colormap
+# colors = cmap(values)
+#
+# # print(colors)
+# with open(os.path.join(save, 'color_palette.pkl'), 'wb') as f:
+# 	pickle.dump(colors, f)

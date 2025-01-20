@@ -34,7 +34,7 @@ for file in pkl_files:
 # Define the directory for vessel echosounding transect files
 directory = r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing'
 all_files = os.listdir(directory)
-pkl_files = [f for f in all_files if f.endswith('.pkl')]
+pkl_files = [f for f in all_files if f.endswith('.pkl') and f != 'color_palette.pkl']
 # Create new axis for piecharts
 for i, file in enumerate(pkl_files):
 	# Get vessel data
@@ -42,7 +42,7 @@ for i, file in enumerate(pkl_files):
 		vessel_dict = pickle.load(f)
 	# Create object of class vessel_fishing
 	v_f = Vessel_fishing(vessel_dict['loc_i'], vessel_dict['loc_f'], vessel_dict['date'], vessel_dict['species'],
-	                     vessel_dict['masses'])
+	                     vessel_dict['masses'],vessel_dict['color palette'])
 	# Plot the trawl
 	v_f.plot_transect(a = ax1)
 	# Plot associated pie chart for species fished
@@ -104,7 +104,7 @@ ax1.add_feature(cfeature.BORDERS, linestyle = ':')
 # ax1.set_title('Sampling effort during the JUVENA 2022 survey')
 ax1.legend(loc = 'upper right')
 # Save fig
-# plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\sampling_effort.png', transparent = True,
-#             bbox_inches = 'tight')
+plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\sampling_effort.png', transparent = True,
+            bbox_inches = 'tight')
 # Show plot
 plt.show()

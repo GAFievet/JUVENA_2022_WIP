@@ -35,15 +35,6 @@ class Glider:
 		# Add a colorbar with a matching colormap
 		cbar = figure.colorbar(sc, ax = a, fraction = 0.042, orientation = 'vertical')
 
-		# # Data processing limits
-		# # Define the target date
-		# end = datetime(2022, 10, 7, 0, 0, 0).date() # Extract only the date part
-		# try:
-		# 	iend = next(i for i, dt in enumerate(self.time) if dt.date() == end)
-		# 	iend = iend - 1
-		# except StopIteration:
-		# 	return "Iterration in glider_GPS extracted data issue"
-
 		# Set label to color bar
 		cbar.set_label('Time')
 
@@ -54,9 +45,20 @@ class Glider:
 		# Set tick labels
 		cbar.set_ticklabels([mdates.num2date(tick).strftime("%d/%m/%Y") for tick in ticks])
 
-		# # Create a rectangle to highlight the range
-		# vmax=ticks[4]
-		# cbar.ax1.add_patch(plt.Rectangle((0, 0), 1, vmax , facecolor = 'none', edgecolor = 'red', linewidth
-		# = 2))
-# Plot the path as a line
-# a.plot(self.lons, self.lats, transform = ccrs.Geodetic(), c = 'k', ls = '-', lw = 0.5)
+		# Create a rectangle to highlight the range
+		y = datetime(2022, 9, 26, 0, 0, 0).date()  # Extract only the date part
+		h = datetime(2022, 10, 1, 0, 0, 0).date()  # Extract only the date part
+		cbar.ax.add_patch(plt.Rectangle((0, y), 1, h-y, facecolor = 'none', edgecolor = 'red', lw = 2))
+
+	# # Data processing limits
+		# # Define the target date
+		# start =
+		# end =
+		# try:
+		# 	iend = next(i for i, dt in enumerate(self.time) if dt.date() == end)
+		# except StopIteration:
+		# 	return "Iterration in glider_GPS extracted data issue"
+		# try:
+		# 	istart = next(i for i, dt in enumerate(self.time) if dt.date() == start)
+		# except StopIteration:
+		# 	return "Iterration in glider_GPS extracted data issue"

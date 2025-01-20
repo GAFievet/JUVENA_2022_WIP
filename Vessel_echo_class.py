@@ -1,7 +1,7 @@
 import cartopy.crs as ccrs
 
 
-class Vessel:
+class Vessel_echo:
 	def __init__(self, longitudes, latitudes, time_stamps):
 		"""
 		:param longitudes: list of longitudes of the vessel
@@ -21,10 +21,10 @@ class Vessel:
 
 	def plot_transect(self, a):
 		"""
-		 Plots the vessel on the provided ax.
+		 Plots the vessel on the provided ax1.
 
 		 Args:
-		     a: The matplotlib ax object to plot on.
+		     a: The matplotlib ax1 object to plot on.
 		 """
 		a.plot(self.lons, self.lats, transform = ccrs.Geodetic(), label = self.time[len(self.time)//2].strftime(
 			"%d/%m/%Y"),

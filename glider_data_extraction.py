@@ -1,7 +1,8 @@
 import pandas as pd
 from datetime_formating import combine_date_time
 import pickle
-
+import datetime
+import matplotlib.dates as mdates
 
 def extract_glider_data(extraction_file: str, saving_path: str):
 	# Read extraction_file
@@ -17,6 +18,10 @@ def extract_glider_data(extraction_file: str, saving_path: str):
 	zipped = list(zip(glider_mat[0], glider_mat[1], glider_mat[2]))
 	# Sort by ascending order according to the 3 element
 	zipped.sort(key = lambda x: x[2])
+	# Get rid of not used data (i.e., after the 6th of october)
+	date_end = datetime.datetime(2022, 10, 7, 0, 0, 0)
+	zipped = [elt for elt in zipped if elt[2] <= date_end]
+
 	# unzip to a matrix sorted in datetime order
 	glider_mat[0], glider_mat[1], glider_mat[2] = zip(*zipped)
 
@@ -29,6 +34,6 @@ def extract_glider_data(extraction_file: str, saving_path: str):
 
 
 if __name__ == "__main__":
-	file=r'C:\Users\G to the A\PycharmProjects\Paper\glider\Glider.gps.csv'
-	save_path=r'C:\Users\G to the A\PycharmProjects\Paper\glider\glider_GPS.pkl'
-	glider_data = extract_glider_data(file,save_path)
+	file = r'C:\Users\G to the A\PycharmProjects\Paper\glider\Glider.gps.csv'
+	save_path = r'C:\Users\G to the A\PycharmProjects\Paper\glider\glider_GPS.pkl'
+	glider_data = extract_glider_data(file, save_path)

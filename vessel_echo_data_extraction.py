@@ -4,7 +4,7 @@ import pickle
 import os
 
 
-def extract_vessel_data(file, saving_path):
+def extract_vessel_echo_data(file, saving_path):
 	"""
 	:param saving_path: path where to save the .pkl file
 	:param file: string of the path of an Excel extraction_file containing  vessel transects vessel_mat
@@ -24,8 +24,8 @@ def extract_vessel_data(file, saving_path):
 
 
 if __name__ == "__main__":
-	save_path = r'C:\Users\G to the A\PycharmProjects\Paper\vessels'
-	base_path = r'C:\Users\G to the A\PycharmProjects\Paper\vessels'
-	vessel_0904 = extract_vessel_data(os.path.join(base_path, 'EB20220904_fullwatercolumn.csv'), save_path)
-	vessel_0930 = extract_vessel_data(os.path.join(base_path, 'RM20220930_fullwatercolumn.csv'), save_path)
-	vessel_1001 = extract_vessel_data(os.path.join(base_path, 'RM20221001_fullwatercolumn.csv'), save_path)
+	save_path = r'/vessels_echo'
+	base_path = r'/vessels_echo'
+	vessel_0904 = extract_vessel_echo_data(os.path.join(base_path, 'EB20220904_fullwatercolumn.csv'), save_path)
+	vessel_0930 = extract_vessel_echo_data(os.path.join(base_path, 'RM20220930_fullwatercolumn.csv'), save_path)
+	vessel_1001 = extract_vessel_echo_data(os.path.join(base_path, 'RM20221001_fullwatercolumn.csv'), save_path)

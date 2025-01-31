@@ -3,6 +3,7 @@ import matplotlib.dates as mdates
 from datetime import datetime
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import pickle
+from matplotlib.text import Text
 import matplotlib.pyplot as plt
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
@@ -48,17 +49,16 @@ class Glider:
 		# Create a rectangle to highlight the range
 		y = datetime(2022, 9, 26, 0, 0, 0).date()  # Extract only the date part
 		h = datetime(2022, 10, 1, 0, 0, 0).date()  # Extract only the date part
-		cbar.ax.add_patch(plt.Rectangle((0, y), 1, h-y, facecolor = 'none', edgecolor = 'red', lw = 2))
+		rect = plt.Rectangle((0, y), 1, h - y, facecolor = 'none', edgecolor = 'red', lw = 2)
+		cbar.ax.add_patch(rect)
 
-	# # Data processing limits
-		# # Define the target date
-		# start =
-		# end =
-		# try:
-		# 	iend = next(i for i, dt in enumerate(self.time) if dt.date() == end)
-		# except StopIteration:
-		# 	return "Iterration in glider_GPS extracted data issue"
-		# try:
-		# 	istart = next(i for i, dt in enumerate(self.time) if dt.date() == start)
-		# except StopIteration:
-		# 	return "Iterration in glider_GPS extracted data issue"
+		# Calculate center coordinates of the centre of the rectangle
+		x_center = rect.get_x() + rect.get_width() / 2
+		y_center = rect.get_y() + rect.get_height() / 2
+
+		# Create text object
+		text = Text(x_center, y_center, 'Storm', ha = 'center', va = 'center', color = 'red', fontsize = 11,
+		            rotation = 90)
+
+		# Add text to the plot
+		cbar.ax.add_artist(text)

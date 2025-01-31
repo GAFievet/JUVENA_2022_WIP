@@ -5,6 +5,11 @@ import datetime
 import matplotlib.dates as mdates
 
 def extract_glider_data(extraction_file: str, saving_path: str):
+	"""
+	:param extraction_file: what file to open
+	:param saving_path: where to save the newly formated data
+	:return: .pkl file of a matrix of data (lons,lats,datetime
+	"""
 	# Read extraction_file
 	df = pd.read_csv(extraction_file)
 	# Extract longitudes, latitudes, dates and times

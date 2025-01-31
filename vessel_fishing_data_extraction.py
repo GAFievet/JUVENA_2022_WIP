@@ -70,7 +70,7 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 if __name__ == "__main__":
 	save = r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing'
 	file_name = r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\fishing operatiions V6 V8 V10.xlsx'
-	# example_dict = extract_vessel_fishing_data(file_name, save, 9048)
+	example_dict = extract_vessel_fishing_data(file_name, save, 9001)
 	# with open(r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\haul_9048.pkl', 'rb') as f:
 	# 	example_dict = pickle.load(f)
 	# print(example_dict)

@@ -19,14 +19,14 @@ class Vessel_echo:
 			towards = 'v'
 		self.orientation = towards
 
-	def plot_transect(self, a):
+	def plot_transect(self, a2,lon_shift):
 		"""
-		 Plots the vessel on the provided ax1.
+		:type fig: figure
+		:param a2: Child axis
+		:param lon_shift: dlongitude to spread transects horizontally
+		:return: plots a transect of vessel fishing
+		"""
+		new_lons = [lon + lon_shift for lon in self.lons]
+		a2.plot(new_lons, self.lats, transform = ccrs.Geodetic(), label = self.time[len(self.time) // 2].strftime(
+			"%d/%m/%Y"), ls = '-', lw = '1', marker = self.orientation, markevery = [0, - 1])
 
-		 Args:
-		     a: The matplotlib ax1 object to plot on.
-		 """
-		a.plot(self.lons, self.lats, transform = ccrs.Geodetic(), label = self.time[len(self.time)//2].strftime(
-			"%d/%m/%Y"),
-		       ls = '-',
-		       lw = '1', marker = self.orientation, markevery = [0, - 1])

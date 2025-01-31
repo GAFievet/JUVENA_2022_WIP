@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import os
 import pickle
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-
+import numpy as np
 from Glider_class import Glider
 from Vessel_echo_class import Vessel_echo
 from Vessel_fishing_class import Vessel_fishing
@@ -15,6 +15,17 @@ proj = ccrs.Mercator()
 
 # Create a figure and axis
 fig, ax1 = plt.subplots(figsize = (10, 5), subplot_kw = {'projection': proj})
+
+# Adjust longitudinal spreading of transects
+# Find how many transects are to plot
+n = 0
+for root, dirs, files in os.walk(r'C:\Users\G to the A\PycharmProjects\Paper'):
+	for file in files:
+		if file.endswith(".pkl") and file not in ('color_palette.pkl', 'glider_GPS.pkl'):
+			n += 1
+
+# Calculate longitude shifts
+longitude_shifts = np.linspace(-0.025, 0.025, n).tolist()
 
 ###### VESSELS ECHO ######
 # Define the directory for vessel echosounding transect files
@@ -28,7 +39,8 @@ for file in pkl_files:
 	# Create object of class vessel_echo
 	v_e = Vessel_echo(vessel_mat[0], vessel_mat[1], vessel_mat[2])
 	# plot the transect
-	v_e.plot_transect(ax1)
+	v_e.plot_transect(ax1, longitude_shifts[0])
+	longitude_shifts.pop(0)
 
 ###### VESSEL FISHING ######
 # Define the directory for vessel echosounding transect files
@@ -42,13 +54,18 @@ for i, file in enumerate(pkl_files):
 		vessel_dict = pickle.load(f)
 	# Create object of class vessel_fishing
 	v_f = Vessel_fishing(vessel_dict['loc_i'], vessel_dict['loc_f'], vessel_dict['date'], vessel_dict['species'],
-	                     vessel_dict['masses'],vessel_dict['color palette'])
+	                     vessel_dict['masses'], vessel_dict['color palette'])
 	# Plot the trawl
-	v_f.plot_transect(a = ax1)
+	v_f.plot_transect(ax1, longitude_shifts[0])
 	# Plot associated pie chart for species fished
 	ax2 = inset_axes(ax1, width = "40%", height = "40%", loc = 2, bbox_to_anchor = (-0.35, 0.6 - 0.2 * i, 0.4, 0.4),
 	                 bbox_transform = ax1.transAxes)
-	v_f.abundance_pie_chart(ax2)
+	if v_f.orientation == 'v':
+		vessel_loc=[v_f.lons[0] + longitude_shifts[0], v_f.lats[0]]
+	else:
+		vessel_loc = [v_f.lons[1] + longitude_shifts[0], v_f.lats[1]]
+	v_f.abundance_pie_chart(ax1, ax2,vessel_loc)
+	longitude_shifts.pop(0)
 
 ###### GLIDER ######
 

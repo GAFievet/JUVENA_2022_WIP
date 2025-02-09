@@ -4,6 +4,9 @@ from datetime import datetime
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
+from matplotlib.text import Text
 
 # Read daily glider GPS files
 directory = r'C:\Users\G to the A\PycharmProjects\Paper\glider\Daily'
@@ -31,10 +34,14 @@ for file in csv_files:
 
 	# Loop through df
 	for i in range(len(df)):
-		condition1 = abs(df['Latitude_avg'].iloc[i] - df['Latitude_avg'].iloc[relay_idx]) < 0.005
-		condition2 = datetime.strptime(df["Time_avg_UTC"].iloc[i], "%d/%m/%Y %H:%M:%S").date() == datetime.strptime(
-			df["Time_avg_UTC"].iloc[relay_idx], "%d/%m/%Y %H:%M:%S").date()
-		if df["Sv_lin"].iloc[i] != 0 and start_idx is None:
+		# Default values for conditions 1 and 2
+		condition1 = False
+		condition2 = False
+		if relay_idx is not None:  # Sets conditions for plotting
+			condition1 = abs(df['Latitude_avg'].iloc[i] - df['Latitude_avg'].iloc[relay_idx]) < 1
+			condition2 = (datetime.strptime(df["Time_avg_UTC"].iloc[i], "%d/%m/%Y %H:%M:%S").date() ==
+			              datetime.strptime(df["Time_avg_UTC"].iloc[relay_idx], "%d/%m/%Y %H:%M:%S").date())
+		if df["Sv_lin"].iloc[i] != 0 and start_idx is None:  # Initiate a series of anchovy
 			start_idx = i  # Mark the beginning of a non-zero sequence
 			relay_idx = start_idx  # Mark the relay idx
 		elif df["Sv_lin"].iloc[i] != 0 and start_idx is not None and condition1 and condition2:
@@ -54,19 +61,54 @@ for file in csv_files:
 			y = [df["Latitude_avg"].iloc[start_idx], df["Latitude_avg"].iloc[- 1]]
 			plt.plot(x, y, '-', c = "#F8766D", lw = 3)
 
-		# color vessel
-		# "#01BEC3"
+# color vessel
+# "#01BEC3"
 
-		# Format the x-axis (without the year)
-		plt.gca().xaxis.set_major_formatter(
-			mdates.DateFormatter('%d/%m'))  # %b: Abbreviated month name, %d: Day of the month
-		# Format the x-axis to show dates nicely
-		plt.gcf().autofmt_xdate()  # Automatically formats the dates
+# Format the x-axis (without the year)
+plt.gca().xaxis.set_major_formatter(
+	mdates.DateFormatter('%d/%m'))  # %b: Abbreviated month name, %d: Day of the month
+# Format the x-axis to show dates nicely
+plt.gcf().autofmt_xdate()  # Automatically formats the dates
 
-		plt.xlabel("Date")
-		plt.ylabel("Latitude")
+plt.xlabel("Date")
+plt.ylabel("Latitude")
 
-		# plt.xticks(days)
-		plt.tight_layout()
-		plt.grid()
-		plt.show()
+plt.xticks(days)
+plt.tight_layout()
+plt.grid()
+
+# Manually create a legend
+# Anchovy (black filled rectangle)
+anchovy_patch = Line2D([0], [0],color = 'black', linewidth = 3, label = 'Anchovy', visible = True)
+
+# Coverage (black line)
+coverage_line = Line2D([0], [0], color = 'black', linewidth = 1.5, label = 'Coverage', visible = True)
+
+# Glider (red line)
+glider_line = Line2D([0], [0], color = "#F8766D", linewidth = 1, label = 'Glider')
+
+# Vessel (cyan line)
+vessel_line = Line2D([0], [0], color = "#01BEC3", linewidth = 1, label = 'Vessel')
+
+# Legend titles
+type_pos_title = Text(0, 0, 'Data type', fontweight = 'bold')
+platform_type_title = Text(0, 0, 'Platform type', fontweight = 'bold')
+
+# Create dummy patches with invisible face colors to act as handles
+type_pos_patch = Patch(facecolor = 'none', edgecolor = 'none', label = type_pos_title)
+platform_type_patch = Patch(facecolor = 'none', edgecolor = 'none', label = platform_type_title)
+
+# Create the legend with custom elements
+legend = plt.legend(
+	handles = [anchovy_patch, coverage_line, glider_line, vessel_line],
+	loc = "lower right",  # Adjust location as needed
+	frameon = True,  # Keeps frame around legend
+	fontsize = 10)  # Adjust font size as needed
+
+# plt.legend(loc = 'lower right')
+
+# Save fig
+plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\anchovy_detection.png', transparent = True,
+            bbox_inches = 'tight')
+
+plt.show()

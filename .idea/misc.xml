@@ -3,4 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Paper" />
   </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Paper" project-jdk-type="Python SDK" />
 </project>

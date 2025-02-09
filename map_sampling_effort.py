@@ -21,7 +21,7 @@ fig, ax1 = plt.subplots(figsize = (10, 5), subplot_kw = {'projection': proj})
 n = 0
 for root, dirs, files in os.walk(r'C:\Users\G to the A\PycharmProjects\Paper'):
 	for file in files:
-		if file.endswith(".pkl") and file not in ('color_palette.pkl', 'glider_GPS.pkl'):
+		if file.endswith(".pkl") and file not in ('color_palette.pkl', 'glider_GPS.pkl','CTD.pkl'):
 			n += 1
 
 # Calculate longitude shifts

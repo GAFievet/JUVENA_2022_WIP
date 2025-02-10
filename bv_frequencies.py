@@ -8,26 +8,28 @@ import numpy as np
 import scipy.io as sio
 from matplotlib.text import Text
 
-# Load data
+# Load data from .mat file
 p = os.path.join(r'C:\Users\G to the A\Desktop\MT\Programming\CTD',
                  'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat')
-data = sio.loadmat(p, squeeze_me = True)
-
+data = sio.loadmat(p, squeeze_me = True)  # squeeze arrays to avoid arrays of singleton lists
+# Set clear variable
 date = data['time'][0:915]
 cond = data['conductivity'][0:915]
-depth = data['depth']
 lon = data['longitude'][0:915]
 lat = data['latitude'][0:915]
 pressure = data['pressure'][0:915]
 salinity = data['salinity'][0:915]
 temp = data['temperature'][0:915]
+depth = data['depth']
+# Convert times to python coherent datetime objects
 date = [(datetime(1, 1, 1) + timedelta(days = matlab_date - 367)) for matlab_date in date]
-del data, p
+del data, p  # Delete useless
+
 # Calculate buoyancy frequency (N^2)
 n2, p = gsw.Nsquared(salinity.T, temp.T, pressure.T, lat.T)
 n = np.sqrt(np.abs(n2.T))  # Transpose n2 back and calculate N
-n[np.isinf(n)] = np.nan
-# n = n[0:915, :]
+n[np.isinf(n)] = np.nan  # Avoid inf values
+# Filter frequency value
 # n[n < 0.025] = np.nan
 
 # Plotting the Hovmoller diagram
@@ -43,31 +45,32 @@ contourf = ax.contourf(X, Y, Z, 30, cmap = 'jet')
 # ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %H:%M'))
 # ax.set_xticks(np.linspace(date_num.min(), date_num.max(), 9))
 
+# Set ticks major locator and formatter
 locator = mdates.AutoDateLocator()  # Automatically find tick positions
 formatter = mdates.AutoDateFormatter(locator)  # Automatically format dates
 ax.xaxis.set_major_locator(locator)
 ax.xaxis.set_major_formatter(formatter)
-
-# To format the ticks
+# Format ticks
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d'))
-
+# Init. colorbar, labels along with axis
+cbar = fig.colorbar(contourf, ax = ax, orientation = 'horizontal')
+cbar.set_label('BV freq. (rad/s)')
 ax.set_ylabel('Depth (m)')
 ax.set_xlabel('Time')
-cbar = fig.colorbar(contourf, ax = ax, orientation = 'horizontal')
-
-ylim = -100
+# Set axis limits
+ylim = -100  # Depth limit
 ax.set_ylim([ylim, 0])
-date_num = mdates.date2num(date)
+date_num = mdates.date2num(date)  # Convert dates to mdates
 ax.set_xlim([date_num.min(), date_num.max()])
-
+# Indicate the storm period with red frame
 storm_start = mdates.date2num(datetime(2022, 9, 26))
 storm_end = mdates.date2num(datetime(2022, 9, 30))
 l = storm_end - storm_start
 rect = plt.Rectangle((storm_start, ylim), l, abs(ylim), facecolor = 'none', edgecolor = 'red', lw = 2)
 text = Text(storm_start + l / 2, ylim + 10 * 100 / abs(ylim), 'Storm', ha = 'center', va = 'center', color = 'red',
             fontsize = 11, )
-ax.add_patch(rect)
-ax.add_artist(text)
+ax.add_patch(rect)  # Red frame
+ax.add_artist(text)  # Legend
 
 plt.tight_layout()
 plt.show()

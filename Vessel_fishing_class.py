@@ -61,6 +61,8 @@ class Vessel_fishing:
 		a2.text(0, 0, f"{len(self.species)}", horizontalalignment = 'center', verticalalignment = 'center',
 		        fontsize = 13)
 
+		a2.legend()
+
 		# --- Find the closest point on the pie chart to the point on the map ---
 		# 1. Get the center of the pie chart
 		pie_center = (a2.get_xlim()[0] + a2.get_xlim()[1]) / 2, (a2.get_ylim()[0] + a2.get_ylim()[1]) / 2

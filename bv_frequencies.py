@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import gsw  # Use gsw instead of seawater
 import matplotlib.dates as mdates
+import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
@@ -60,7 +61,6 @@ def bv_freq_avg_every_k_meters(n, depth, date, k=5):
 	depth_avg = [[] for _ in range(210 // k)]
 	bv_mean = []
 	for i in range(1, 210, k):
-
 		n_slice = n[:, i:i + k]  # Create (temporal) slices to average
 		n_slice[np.all(np.isnan(n_slice), axis = 1)] = -999  # Attribute an outlier value to elements in full NaN rows
 		bv_mean.append(np.nanmean(n_slice, axis = 1))  # Compute rows mean
@@ -90,29 +90,40 @@ def bvsubplots(date, X1, Y1, n, X2, Y2, bv_mean, sBV):
 	"""
 	:return: sets of axes and fig
 	"""
-	n=n.T
+	n = n.T
 	to_plot = [[X1, Y1, n], [X2, Y2, bv_mean], [date, sBV]]
 	###################### CREATE FIG ######################
+	# Create fig
+	fig = plt.figure(figsize = (8, 8))
+	# Use GridSpec for layout control
+	gs = gridspec.GridSpec(3, 1)
 
-	fig, axes = plt.subplots(3, 1, figsize = (11, 5))
-	# Store colorbars in a list
-	cbars = []  # Initialize an empty list
+	# Store axes and colorbars in lists
+	axes = []
+	cbars = []
 
-	for i, ax in enumerate(axes):
-		if ax == axes[2]:
+	for i in range(3):
+		ax = fig.add_subplot(gs[i])
+		axes.append(ax
+		            )
+		if i == 2:
 			ax.plot(to_plot[-1][0], to_plot[-1][1], '-b', lw = 1)
 		else:
 			# CONTOUR
 			contourf = ax.contourf(to_plot[i][0], to_plot[i][1], to_plot[i][2], 30, cmap = 'jet')
 			# COLORBAR
-			cbar = fig.colorbar(contourf, ax = ax, orientation = 'vertical')
+			# Create inset axes
+			cbar_ax = ax.inset_axes([1.05, 0.05, 0.03, 0.9], transform = ax.transAxes)  # [left, bottom, width, height]
+			# Init. cbar
+			cbar = fig.colorbar(contourf, cax = cbar_ax, orientation = 'vertical')
 			cbars.append(cbar)
 
 	return fig, axes, cbars
 
 
-def fine_tune_subplots(axes, cbars, max_depth_shown=210):
+def fine_tune_subplots(fig, axes, cbars, max_depth_shown=210):
 	"""
+	:param fig:
 	:param cbars:
 	:param axes:
 	:param max_depth_shown: default (and max) = 210
@@ -125,13 +136,12 @@ def fine_tune_subplots(axes, cbars, max_depth_shown=210):
 	date_num = mdates.date2num(date)
 	ylim = -max_depth_shown
 
-	# Adjust inter-plot padding
-	# plt.subplots_adjust(hspace = 1)
+	fig.subplots_adjust(left = 0.15, right = 0.85, bottom = 0.05, top = 0.95, wspace = 0, hspace = 0.1)
 
 	for i, ax in enumerate(axes):
 		if ax == axes[2]:
 			ax.set_ylim([0.6, 1.1])
-			ax.set_box_aspect(0.16)
+			# ax.set_box_aspect(0.16)
 			ax.yaxis.set_major_locator(MultipleLocator(0.1))
 			# Show grid
 			ax.grid(visible = True, which = 'both', axis = 'y')
@@ -140,11 +150,20 @@ def fine_tune_subplots(axes, cbars, max_depth_shown=210):
 			                     lw = 2)
 			axes[2].add_patch(rect)  # Red frame
 		else:
+			# Hide x-axis ticks for top 2 charts
+			ax.tick_params(axis = 'x', which = 'both', labelbottom = False)
+			# Add grid
+			ax.grid(visible = True, which = 'major', axis = 'both', ls = ':')
+			# Cbar
+			# Format colorbar ticks in scientific notation
+			cbars[i].formatter.set_scientific(True)  # Turn on scientific notation
+			cbars[i].formatter.set_powerlimits((0, 0))  # Set limits for when to use scientific notation (optional)
+			cbars[i].update_normal() # Important: Update the colorbar to apply the formatter
 			cbars[i].set_label('BV freq. (rad/s)')
 			# Set ylim
 			ax.set_ylim([ylim, 0])
-			# Set box aspect
-			ax.set_box_aspect(0.1)
+		# Set box aspect
+		# ax.set_box_aspect(0.1)
 
 		# To create custom evenly spaced xticks
 		# axes[0].xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %H:%M'))
@@ -152,7 +171,7 @@ def fine_tune_subplots(axes, cbars, max_depth_shown=210):
 		ax.xaxis.set_major_locator(locator)
 		ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d'))
 		ax.set_ylabel('Depth (m)')
-		ax.set_xlabel('Time')
+		# ax.set_xlabel('Time')
 		ax.set_xlim([date_num.min(), date_num.max()])
 
 		# text = Text(storm_start + l / 2, ylim + 10 * 100 / abs(ylim), 'Storm', ha = 'center', va = 'center',
@@ -161,9 +180,6 @@ def fine_tune_subplots(axes, cbars, max_depth_shown=210):
 		# ax.add_artist(text)  # Text
 		rect = plt.Rectangle((storm_start, ylim), l, abs(ylim), facecolor = 'none', edgecolor = 'red', lw = 2)
 		ax.add_patch(rect)  # Red frame
-
-	# Layout
-	# plt.tight_layout(rect=[0, 0, 1, 0.95])
 
 
 if __name__ == "__main__":
@@ -174,11 +190,11 @@ if __name__ == "__main__":
 	X2, Y2, bv_mean = bv_freq_avg_every_k_meters(n, depth, date)
 	sBV = bv_sum_top_k_meters(n, 70)
 	fig, axes, cbars = bvsubplots(date, X1, Y1, n, X2, Y2, bv_mean, sBV)
-	fine_tune_subplots(axes, cbars, max_depth_shown = 210)
+	fine_tune_subplots(fig, axes, cbars, max_depth_shown = 210)
 
 # Save fig
 plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\BV_frequencies.png', transparent = False,
             bbox_inches = 'tight')
 
 # Plot full size
-plt.show()
+# plt.show()

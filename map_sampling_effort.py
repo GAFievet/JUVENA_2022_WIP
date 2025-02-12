@@ -121,7 +121,7 @@ ax1.add_feature(cfeature.BORDERS, linestyle = ':')
 # ax1.set_title('Sampling effort during the JUVENA 2022 survey')
 ax1.legend(loc = 'upper right')
 # Save fig
-plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\sampling_effort.png', transparent = True,
+plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\sampling_effort.png', transparent = False,
             bbox_inches = 'tight')
 # Show plot
-plt.show()
+# plt.show()

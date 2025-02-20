@@ -13,14 +13,17 @@ from matplotlib.ticker import MultipleLocator
 # from matplotlib.text import Text
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-def load_dot_mat(path, file_name):
+CTD_path = r'C:\Users\G to the A\Desktop\MT\Programming\CTD'
+CTD_file_name = 'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'
+
+def load_dot_mat_CTD(CTD_path=CTD_path, CTD_file_name=CTD_file_name):
 	"""
 	:param path: path of the file
 	:param file_name: .mat file
 	:return: date, cond, depth, lon, lat, pressure, salinity, temp arrays
 	"""
 	# Load data from .mat file
-	p = os.path.join(path, file_name)
+	p = os.path.join(CTD_path, CTD_file_name)
 	data = sio.loadmat(p, squeeze_me = True)  # Squeeze arrays to avoid singletons
 	# Init. clear variables
 	date = data['time'][0:915]
@@ -57,6 +60,7 @@ def bv_freq_avg_every_k_meters(n, depth, date, k=5):
 	:param depth:
 	:param n: bv freq matrix
 	:param k: average every k meters (default = 5)
+
 	"""
 	depth_avg = [[] for _ in range(210 // k)]
 	bv_mean = []
@@ -80,6 +84,7 @@ def bv_sum_top_k_meters(n, k=70):
 	:param n: bv freq matrix
 	:param k: sum over k meters (default = 70m)
 	:return: BV freq summed over k meters (array)
+	Sum of BV of the first k m of each profile as a measure of stratification
 	"""
 	sBV = np.nansum(n[:, 0:k], axis = 1)
 
@@ -104,8 +109,8 @@ def bvsubplots(date, X1, Y1, n, X2, Y2, bv_mean, sBV):
 
 	for i in range(3):
 		ax = fig.add_subplot(gs[i])
-		axes.append(ax
-		            )
+		axes.append(ax)
+
 		if i == 2:
 			ax.plot(to_plot[-1][0], to_plot[-1][1], '-b', lw = 1)
 		else:
@@ -135,14 +140,18 @@ def fine_tune_subplots(fig, axes, cbars, max_depth_shown=210):
 	locator = mdates.AutoDateLocator()  # Automatically find tick positions
 	date_num = mdates.date2num(date)
 	ylim = -max_depth_shown
-
+	text = ["a)", "b)", "c)"] # Add letter to refer to each subplot
 	fig.subplots_adjust(left = 0.15, right = 0.85, bottom = 0.05, top = 0.95, wspace = 0, hspace = 0.1)
 
 	for i, ax in enumerate(axes):
+
+		axes[i].text(-0.12, 0.9, text[i], fontsize = 11, fontweight = 'bold', transform = axes[i].transAxes)
+
 		if ax == axes[2]:
-			ax.set_ylim([0.6, 1.1])
+			ax.set_ylim([0, 0.7])
 			# ax.set_box_aspect(0.16)
 			ax.yaxis.set_major_locator(MultipleLocator(0.1))
+			ax.set_ylabel(r'BV freq. $\left(s^{-1}\right)$')
 			# Show grid
 			ax.grid(visible = True, which = 'both', axis = 'y')
 			ymin, ymax = ax.get_ylim()
@@ -159,7 +168,8 @@ def fine_tune_subplots(fig, axes, cbars, max_depth_shown=210):
 			cbars[i].formatter.set_scientific(True)  # Turn on scientific notation
 			cbars[i].formatter.set_powerlimits((0, 0))  # Set limits for when to use scientific notation (optional)
 			cbars[i].update_normal() # Important: Update the colorbar to apply the formatter
-			cbars[i].set_label('BV freq. (rad/s)')
+			cbars[i].set_label(r'BV freq. $\left(s^{-1}\right)$')
+			ax.set_ylabel('Depth (m)')
 			# Set ylim
 			ax.set_ylim([ylim, 0])
 		# Set box aspect
@@ -170,10 +180,8 @@ def fine_tune_subplots(fig, axes, cbars, max_depth_shown=210):
 		# axes[0].set_xticks(np.linspace(date_num.min(), date_num.max(), 9))
 		ax.xaxis.set_major_locator(locator)
 		ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d'))
-		ax.set_ylabel('Depth (m)')
-		# ax.set_xlabel('Time')
 		ax.set_xlim([date_num.min(), date_num.max()])
-
+		# Allow LaTeX use for labels in plt
 		# text = Text(storm_start + l / 2, ylim + 10 * 100 / abs(ylim), 'Storm', ha = 'center', va = 'center',
 		# color = 'red',
 		# fontsize = 11, )
@@ -182,13 +190,12 @@ def fine_tune_subplots(fig, axes, cbars, max_depth_shown=210):
 		ax.add_patch(rect)  # Red frame
 
 
+
 if __name__ == "__main__":
-	path = r'C:\Users\G to the A\Desktop\MT\Programming\CTD'
-	file_name = 'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'
-	date, cond, depth, lon, lat, pressure, salinity, temp = load_dot_mat(path, file_name)
+	date, cond, depth, lon, lat, pressure, salinity, temp = load_dot_mat_CTD()
 	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat)
 	X2, Y2, bv_mean = bv_freq_avg_every_k_meters(n, depth, date)
-	sBV = bv_sum_top_k_meters(n, 70)
+	sBV = bv_sum_top_k_meters(n, 30)
 	fig, axes, cbars = bvsubplots(date, X1, Y1, n, X2, Y2, bv_mean, sBV)
 	fine_tune_subplots(fig, axes, cbars, max_depth_shown = 210)
 

@@ -4,9 +4,11 @@ import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from scipy.interpolate import interp1d
 from scipy.io import loadmat
 
-from bv_frequencies import load_dot_mat_CTD
+from bv_frequencies import load_dot_mat_CTD, compute_bv_freq, bv_freq_avg_every_k_meters
+from filter_lp import get_sampling_freq_total_time, get_cutoff_freq_norm, get_lp_butter_lp_filter_param, lp_filter
 
 CTD_path = r'C:\Users\G to the A\Desktop\MT\Programming\CTD'
 CTD_file_name = 'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'
@@ -41,8 +43,55 @@ def load_dot_mat_ancho(ancho_path=ancho_path, ancho_file_name="Juvenile_Anchovy_
 	return acoustic_df
 
 
+def extract_curves(bv_matrix, threshold=0.024):
+	"""
+	Extracts two curves representing the boundaries where BV values exceed a threshold.
 
-def plot_acoustic_profile(date, depth, mld, bathy, acoustic_df):
+	Args:
+		bv_matrix (numpy.ndarray): 2D array of BV frequency values (depth x time).
+		threshold (float): The threshold value above which to define the curves.
+
+	Returns:
+		tuple: A tuple containing two numpy arrays:
+			   - upper_boundary (1D array): Depth indices for the upper boundary.
+			   - lower_boundary (1D array): Depth indices for the lower boundary.
+			   Returns None if no values exceed the threshold.
+	"""
+
+	depths, times = bv_matrix.shape
+
+	upper_boundary = np.full(times, np.nan, dtype = float)  # Initialize with NaN
+	lower_boundary = np.full(times, np.nan, dtype = float)  # Initialize with NaN
+
+	for t in range(times):
+		exceed_indices = [i for i, e in enumerate(bv_matrix[:, t]) if e > threshold]
+
+		if len(exceed_indices) > 0:
+			upper_boundary[t] = exceed_indices[0]  # First index above threshold
+			lower_boundary[t] = exceed_indices[-1]  # Last index above threshold
+
+	# Handle cases where no threshold is exceeded at a given time:
+	# Option 1: Keep NaN and let plotting handle it (gaps in the filled area)
+	# Option 2: Interpolate (if you want connected lines even where data is missing)
+	# Example of linear interpolation:
+
+	valid_times = ~np.isnan(upper_boundary)
+	if np.any(valid_times):  # Check if any valid times exist
+		f_upper = interp1d(np.where(valid_times)[0], upper_boundary[valid_times], kind = 'linear',
+		                   fill_value = "extrapolate")
+		upper_boundary = f_upper(np.arange(times))
+
+		f_lower = interp1d(np.where(valid_times)[0], lower_boundary[valid_times], kind = 'linear',
+		                   fill_value = "extrapolate")
+		lower_boundary = f_lower(np.arange(times))
+	# Make sure it's a list of indices
+	upper_boundary = [round(e) for e in upper_boundary]
+	lower_boundary = [round(e) for e in lower_boundary]
+
+	return upper_boundary, lower_boundary, threshold
+
+
+def plot_acoustic_profile(date, mld, bathy, acoustic_df, upper_boundary, lower_boundary, threshold, depth_avg, cf_h):
 	# Create figure
 	fig, ax1 = plt.subplots(figsize = (15, 4))  # Adjusted figure size
 	# Plot TC
@@ -52,19 +101,29 @@ def plot_acoustic_profile(date, depth, mld, bathy, acoustic_df):
 	                      c = 10 * np.log10(acoustic_df['Sv_lin']), marker = 'o', cmap = 'jet')
 	cbar = fig.colorbar(scatter, ax = ax1, pad = 0.07)
 
+	# Brunt-Väisälä freq.
+	s1 = [depth_avg[e] for e in upper_boundary]
+	s2 = [depth_avg[e] for e in lower_boundary]
+	# Low pass signals
+	sf, length_sec = get_sampling_freq_total_time(s1, 14)
+	fc = get_cutoff_freq_norm(cf_h, length_sec)
+	a, b = get_lp_butter_lp_filter_param(4, fc)
+	s1 = lp_filter(a, b, s1)
+	s2 = lp_filter(a, b, s2)
+
+	ax1.fill_between(date, s1, s2, fc = 'red', alpha = 0.2, label = f"BV freq. > {threshold} Hz LP {cf_h}h")
+
 	# Bathymetry
 	ax2 = ax1.twinx()  # Create a second y-axis
 	ax2.plot(date, bathy, ':k', linewidth = 1, label = 'Bathymetry')  # Plot bathymetry
 	# Add shelf break depth line
 	ax2.axhline(-200, linestyle = '-.', color = 'k', linewidth = 0.8)  # yline to axhline
 
-	# ax1.fill_between([storm_start, storm_end], yl[1], yl[1], yl[0], color = 'blue', alpha = 0.1, label = 'Storm')
-
 	axes = [ax1, ax2]
 	return fig, axes, cbar
 
 
-def fine_tune_acoustic_profile(fig, ax, cbar, date):
+def fine_tune_acoustic_profile(ax, cbar, date):
 	# Axis labels and limits
 	ax[0].set_ylabel("Thermocline & Juvenile Anchovy depth (m)")
 	ax[0].xaxis.set_major_formatter(mdates.DateFormatter('%b-%d'))
@@ -87,7 +146,7 @@ def fine_tune_acoustic_profile(fig, ax, cbar, date):
 	# Combine legends from both axes
 	lines1, labels1 = ax[0].get_legend_handles_labels()
 	lines2, labels2 = ax[1].get_legend_handles_labels()
-	ax[0].legend(lines1 + lines2, labels1 + labels2, loc = 'lower right')
+	ax[0].legend(lines1 + lines2, labels1 + labels2, loc = 'lower left', framealpha = 1, facecolor = 'white')
 
 	cbar.set_label("VBS (dB)")
 
@@ -99,8 +158,12 @@ if __name__ == "__main__":
 	mld = load_dot_mat_mld()
 	bathy = load_dot_mat_bathy()
 	acoustic_df = load_dot_mat_ancho()
-	fig, ax, cbar = plot_acoustic_profile(date, depth, mld, bathy, acoustic_df)
-	fine_tune_acoustic_profile(fig, ax, cbar, date)
+	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat, date, depth)
+	X2, Y2, bv_mean, depth_avg = bv_freq_avg_every_k_meters(n, depth, date)
+	upper_boundary, lower_boundary, threshold = extract_curves(bv_mean, 0.024)
+	fig, ax, cbar = plot_acoustic_profile(date, mld, bathy, acoustic_df, upper_boundary, lower_boundary, threshold,
+	                                      depth_avg, 48)
+	fine_tune_acoustic_profile(ax, cbar, date)
 
 	plt.tight_layout()  # Adjust layout to prevent labels from overlapping
 	plt.show()

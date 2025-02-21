@@ -40,7 +40,7 @@ def load_dot_mat_CTD(CTD_path=CTD_path, CTD_file_name=CTD_file_name):
 	return date, cond, depth, lon, lat, pressure, salinity, temp
 
 
-def compute_bv_freq(salinity, temp, pressure, lat):
+def compute_bv_freq(salinity, temp, pressure, lat,date,depth):
 	"""
 	:return: X1 (time) and Y1 (depth) as meshgrid and n the bv frequencies over the meshgrid
 	"""
@@ -76,7 +76,7 @@ def bv_freq_avg_every_k_meters(n, depth, date, k=5):
 	# FORMAT DATA FOR PLOTTING
 	X2, Y2 = np.meshgrid(date, depth_avg)
 
-	return X2, Y2, bv_mean
+	return X2, Y2, bv_mean, depth_avg
 
 
 def bv_sum_top_k_meters(n, k=70):
@@ -193,15 +193,15 @@ def fine_tune_subplots(fig, axes, cbars, max_depth_shown=210):
 
 if __name__ == "__main__":
 	date, cond, depth, lon, lat, pressure, salinity, temp = load_dot_mat_CTD()
-	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat)
-	X2, Y2, bv_mean = bv_freq_avg_every_k_meters(n, depth, date)
+	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat,date,depth)
+	X2, Y2, bv_mean, depth_avg = bv_freq_avg_every_k_meters(n, depth, date)
 	sBV = bv_sum_top_k_meters(n, 30)
 	fig, axes, cbars = bvsubplots(date, X1, Y1, n, X2, Y2, bv_mean, sBV)
-	fine_tune_subplots(fig, axes, cbars, max_depth_shown = 210)
+	fine_tune_subplots(fig, axes, cbars, max_depth_shown = 60)
 
 # Save fig
-plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\BV_frequencies.png', transparent = False,
-            bbox_inches = 'tight')
+# plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\BV_frequencies.png', transparent = False,
+#             bbox_inches = 'tight')
 
 # Plot full size
 # plt.show()

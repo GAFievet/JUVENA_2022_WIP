@@ -115,7 +115,7 @@ def plot_acoustic_profile(date, mld, bathy, acoustic_df, upper_boundary, lower_b
 
 	# Bathymetry
 	ax2 = ax1.twinx()  # Create a second y-axis
-	ax2.plot(date, bathy, ':k', linewidth = 1, label = 'Bathymetry')  # Plot bathymetry
+	ax2.plot(date, bathy, ':k', linewidth = 1)  # Plot bathymetry
 	# Add shelf break depth line
 	ax2.axhline(-200, linestyle = '-.', color = 'k', linewidth = 0.8)  # yline to axhline
 
@@ -149,8 +149,7 @@ def fine_tune_acoustic_profile(ax, cbar, date):
 	ax[0].legend(lines1 + lines2, labels1 + labels2, loc = 'lower left', framealpha = 1, facecolor = 'white')
 
 	cbar.set_label("VBS (dB)")
-
-	return
+	plt.tight_layout()  # Adjust layout to prevent labels from overlapping
 
 
 if __name__ == "__main__":
@@ -158,12 +157,14 @@ if __name__ == "__main__":
 	mld = load_dot_mat_mld()
 	bathy = load_dot_mat_bathy()
 	acoustic_df = load_dot_mat_ancho()
-	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat, date, depth)
+	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat, date, depth,)
 	X2, Y2, bv_mean, depth_avg = bv_freq_avg_every_k_meters(n, depth, date)
 	upper_boundary, lower_boundary, threshold = extract_curves(bv_mean, 0.024)
 	fig, ax, cbar = plot_acoustic_profile(date, mld, bathy, acoustic_df, upper_boundary, lower_boundary, threshold,
 	                                      depth_avg, 48)
 	fine_tune_acoustic_profile(ax, cbar, date)
 
-	plt.tight_layout()  # Adjust layout to prevent labels from overlapping
-	plt.show()
+	plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\echosounding_profile.png', transparent = False,
+	            bbox_inches = 'tight')
+
+	# plt.show()

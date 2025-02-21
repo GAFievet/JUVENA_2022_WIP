@@ -197,11 +197,11 @@ if __name__ == "__main__":
 	X2, Y2, bv_mean, depth_avg = bv_freq_avg_every_k_meters(n, depth, date)
 	sBV = bv_sum_top_k_meters(n, 30)
 	fig, axes, cbars = bvsubplots(date, X1, Y1, n, X2, Y2, bv_mean, sBV)
-	fine_tune_subplots(fig, axes, cbars, max_depth_shown = 60)
+	fine_tune_subplots(fig, axes, cbars, max_depth_shown = 210)
 
-# Save fig
-# plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\BV_frequencies.png', transparent = False,
-#             bbox_inches = 'tight')
+	# Save fig
+	plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\BV_frequencies.png', transparent = False,
+	            bbox_inches = 'tight')
 
-# Plot full size
-# plt.show()
+	# Plot full size
+	# plt.show()

@@ -65,7 +65,7 @@ def bv_freq_avg_every_k_meters(n, depth, date, k=5):
 	depth_avg = [[] for _ in range(210 // k)]
 	bv_mean = []
 	for i in range(1, 210, k):
-		n_slice = n[:, i:i + k]  # Create (temporal) slices to average
+		n_slice = n[:, i:i + k]  # Create (depth) slices to average
 		n_slice[np.all(np.isnan(n_slice), axis = 1)] = -999  # Attribute an outlier value to elements in full NaN rows
 		bv_mean.append(np.nanmean(n_slice, axis = 1))  # Compute rows mean
 		n_slice[n_slice == -999] = np.nan  # Attribute an outlier value to elements in full NaN rows
@@ -151,7 +151,7 @@ def fine_tune_subplots(fig, axes, cbars, max_depth_shown=210):
 			ax.set_ylim([0, 0.7])
 			# ax.set_box_aspect(0.16)
 			ax.yaxis.set_major_locator(MultipleLocator(0.1))
-			ax.set_ylabel(r'BV freq. $\left(s^{-1}\right)$')
+			ax.set_ylabel(r'BV freq. (Hz)')
 			# Show grid
 			ax.grid(visible = True, which = 'both', axis = 'y')
 			ymin, ymax = ax.get_ylim()
@@ -168,7 +168,7 @@ def fine_tune_subplots(fig, axes, cbars, max_depth_shown=210):
 			cbars[i].formatter.set_scientific(True)  # Turn on scientific notation
 			cbars[i].formatter.set_powerlimits((0, 0))  # Set limits for when to use scientific notation (optional)
 			cbars[i].update_normal() # Important: Update the colorbar to apply the formatter
-			cbars[i].set_label(r'BV freq. $\left(s^{-1}\right)$')
+			cbars[i].set_label(r'BV freq. (Hz)')
 			ax.set_ylabel('Depth (m)')
 			# Set ylim
 			ax.set_ylim([ylim, 0])

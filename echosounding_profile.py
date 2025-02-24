@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import matplotlib.dates as mdates
+import matplotlib.patches as patches
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -70,11 +71,6 @@ def extract_curves(bv_matrix, threshold=0.024):
 			upper_boundary[t] = exceed_indices[0]  # First index above threshold
 			lower_boundary[t] = exceed_indices[-1]  # Last index above threshold
 
-	# Handle cases where no threshold is exceeded at a given time:
-	# Option 1: Keep NaN and let plotting handle it (gaps in the filled area)
-	# Option 2: Interpolate (if you want connected lines even where data is missing)
-	# Example of linear interpolation:
-
 	valid_times = ~np.isnan(upper_boundary)
 	if np.any(valid_times):  # Check if any valid times exist
 		f_upper = interp1d(np.where(valid_times)[0], upper_boundary[valid_times], kind = 'linear',
@@ -84,7 +80,7 @@ def extract_curves(bv_matrix, threshold=0.024):
 		f_lower = interp1d(np.where(valid_times)[0], lower_boundary[valid_times], kind = 'linear',
 		                   fill_value = "extrapolate")
 		lower_boundary = f_lower(np.arange(times))
-	# Make sure it's a list of indices
+	# Make sure it's a list of integers
 	upper_boundary = [round(e) for e in upper_boundary]
 	lower_boundary = [round(e) for e in lower_boundary]
 
@@ -102,6 +98,7 @@ def plot_acoustic_profile(date, mld, bathy, acoustic_df, upper_boundary, lower_b
 	cbar = fig.colorbar(scatter, ax = ax1, pad = 0.07)
 
 	# Brunt-Väisälä freq.
+	# Rescale along depths
 	s1 = [depth_avg[e] for e in upper_boundary]
 	s2 = [depth_avg[e] for e in lower_boundary]
 	# Low pass signals
@@ -110,8 +107,9 @@ def plot_acoustic_profile(date, mld, bathy, acoustic_df, upper_boundary, lower_b
 	a, b = get_lp_butter_lp_filter_param(4, fc)
 	s1 = lp_filter(a, b, s1)
 	s2 = lp_filter(a, b, s2)
-
-	ax1.fill_between(date, s1, s2, fc = 'red', alpha = 0.2, label = f"BV freq. > {threshold} Hz LP {cf_h}h")
+	# Plot ribbon
+	ax1.fill_between(date, s1, s2, fc = 'red', alpha = 0.2,
+	                 label = f"Depth averaged BV freq. > {threshold:.1E} Hz, LP {cf_h}h")
 
 	# Bathymetry
 	ax2 = ax1.twinx()  # Create a second y-axis
@@ -146,7 +144,8 @@ def fine_tune_acoustic_profile(ax, cbar, date):
 	# Combine legends from both axes
 	lines1, labels1 = ax[0].get_legend_handles_labels()
 	lines2, labels2 = ax[1].get_legend_handles_labels()
-	ax[0].legend(lines1 + lines2, labels1 + labels2, loc = 'lower left', framealpha = 1, facecolor = 'white')
+	ax[1].legend(lines1 + lines2, labels1 + labels2, loc = 'lower left', framealpha = 1, facecolor = "white",
+	             edgecolor = 'black', fancybox = True)
 
 	cbar.set_label("VBS (dB)")
 	plt.tight_layout()  # Adjust layout to prevent labels from overlapping
@@ -157,14 +156,14 @@ if __name__ == "__main__":
 	mld = load_dot_mat_mld()
 	bathy = load_dot_mat_bathy()
 	acoustic_df = load_dot_mat_ancho()
-	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat, date, depth,)
+	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat, date, depth, )
 	X2, Y2, bv_mean, depth_avg = bv_freq_avg_every_k_meters(n, depth, date)
-	upper_boundary, lower_boundary, threshold = extract_curves(bv_mean, 0.024)
+	upper_boundary, lower_boundary, threshold = extract_curves(bv_mean, 2.7*10**(-2))
 	fig, ax, cbar = plot_acoustic_profile(date, mld, bathy, acoustic_df, upper_boundary, lower_boundary, threshold,
-	                                      depth_avg, 48)
+	                                      depth_avg, 72)
 	fine_tune_acoustic_profile(ax, cbar, date)
 
 	plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\echosounding_profile.png', transparent = False,
 	            bbox_inches = 'tight')
 
-	# plt.show()
+# plt.show()

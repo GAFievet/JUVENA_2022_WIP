@@ -1,15 +1,15 @@
 from datetime import datetime
 
 import matplotlib.dates as mdates
-import matplotlib.patches as patches
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from scipy.interpolate import interp1d
 from scipy.io import loadmat
 
-from bv_frequencies import load_dot_mat_CTD, compute_bv_freq, bv_freq_avg_every_k_meters
-from filter_lp import get_sampling_freq_total_time, get_cutoff_freq_norm, get_lp_butter_lp_filter_param, lp_filter
+from BV_ferq.bv_frequencies import load_dot_mat_CTD, compute_bv_freq, bv_freq_avg_every_k_meters
+from BV_ferq.filter_lp import get_sampling_freq_total_time, get_cutoff_freq_norm, get_lp_butter_lp_filter_param, \
+	lp_filter
 
 CTD_path = r'C:\Users\G to the A\Desktop\MT\Programming\CTD'
 CTD_file_name = 'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'
@@ -158,12 +158,12 @@ if __name__ == "__main__":
 	acoustic_df = load_dot_mat_ancho()
 	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat, date, depth, )
 	X2, Y2, bv_mean, depth_avg = bv_freq_avg_every_k_meters(n, depth, date)
-	upper_boundary, lower_boundary, threshold = extract_curves(bv_mean, 2.7*10**(-2))
+	upper_boundary, lower_boundary, threshold = extract_curves(bv_mean, 2.7 * 10 ** (-2))
 	fig, ax, cbar = plot_acoustic_profile(date, mld, bathy, acoustic_df, upper_boundary, lower_boundary, threshold,
 	                                      depth_avg, 72)
 	fine_tune_acoustic_profile(ax, cbar, date)
 
-	plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\echosounding_profile.png', transparent = False,
+	plt.savefig(r'plots/echosounding_profile.png', transparent = False,
 	            bbox_inches = 'tight')
 
 # plt.show()

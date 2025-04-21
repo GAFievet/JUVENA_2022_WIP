@@ -9,7 +9,7 @@ from matplotlib.patches import Patch
 from matplotlib.text import Text
 
 # Read daily glider GPS files
-directory = r'C:\Users\G to the A\PycharmProjects\Paper\glider\Daily'
+directory = r'data/glider/Daily'
 all_files = os.listdir(directory)
 csv_files = [f for f in all_files if f.endswith('.csv')]
 days = []
@@ -24,7 +24,7 @@ for file in csv_files:
 		plt.plot([day, day], [min_lat, max_lat], '-', c = "#F8766D", lw = 1.5)
 
 # Read daily glider acoustic files
-directory = r'C:\Users\G to the A\PycharmProjects\Paper\glider'
+directory = r'data/glider'
 all_files = os.listdir(directory)
 csv_files = [f for f in all_files if f.endswith('.csv') and f != "Glider.gps.csv"]
 for file in csv_files:
@@ -108,7 +108,7 @@ legend = plt.legend(
 # plt.legend(loc = 'lower right')
 
 # Save fig
-plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\anchovy_detection.png', transparent = True,
+plt.savefig(r'plots/anchovy_detection.png', transparent = True,
             bbox_inches = 'tight')
 
 plt.show()

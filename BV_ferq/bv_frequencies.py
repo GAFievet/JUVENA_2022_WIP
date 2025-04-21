@@ -13,7 +13,7 @@ from matplotlib.ticker import MultipleLocator
 # from matplotlib.text import Text
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-CTD_path = r'C:\Users\G to the A\Desktop\MT\Programming\CTD'
+CTD_path = r'C:/Users/G to the A/Desktop/MT/Programming/CTD'
 CTD_file_name = 'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'
 
 def load_dot_mat_CTD(CTD_path=CTD_path, CTD_file_name=CTD_file_name):
@@ -200,7 +200,7 @@ if __name__ == "__main__":
 	fine_tune_subplots(fig, axes, cbars, max_depth_shown = 210)
 
 	# Save fig
-	plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\BV_frequencies.png', transparent = False,
+	plt.savefig(r'../plots', transparent = False,
 	            bbox_inches = 'tight')
 
 	# Plot full size

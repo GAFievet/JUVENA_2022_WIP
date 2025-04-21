@@ -39,6 +39,6 @@ def extract_glider_data(extraction_file: str, saving_path: str):
 
 
 if __name__ == "__main__":
-	file = r'C:\Users\G to the A\PycharmProjects\Paper\glider\Glider.gps.csv'
-	save_path = r'C:\Users\G to the A\PycharmProjects\Paper\glider\glider_GPS.pkl'
+	file = r'../data/glider/Glider.gps.csv'
+	save_path = r'../data/glider/glider_GPS.pkl'
 	glider_data = extract_glider_data(file, save_path)

@@ -24,8 +24,7 @@ def extract_vessel_echo_data(file, saving_path):
 
 
 if __name__ == "__main__":
-	save_path = r'/vessels_echo'
-	base_path = r'/vessels_echo'
-	vessel_0904 = extract_vessel_echo_data(os.path.join(base_path, 'EB20220904_fullwatercolumn.csv'), save_path)
-	vessel_0930 = extract_vessel_echo_data(os.path.join(base_path, 'RM20220930_fullwatercolumn.csv'), save_path)
-	vessel_1001 = extract_vessel_echo_data(os.path.join(base_path, 'RM20221001_fullwatercolumn.csv'), save_path)
+	base_path = r'../data/vessels_echo'
+	vessel_0904 = extract_vessel_echo_data(os.path.join(base_path, 'EB20220904_fullwatercolumn.csv'), base_path)
+	vessel_0930 = extract_vessel_echo_data(os.path.join(base_path, 'RM20220930_fullwatercolumn.csv'), base_path)
+	vessel_1001 = extract_vessel_echo_data(os.path.join(base_path, 'RM20221001_fullwatercolumn.csv'), base_path)

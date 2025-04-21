@@ -37,7 +37,7 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 		species = df.columns[fish_i_f[0]:fish_i_f[1]]
 
 		# Import colors for pie charts
-		with open(r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\color_palette.pkl', 'rb') as f:
+		with open(r'/vessel_fishing/color_palette.pkl', 'rb') as f:
 			colors = pickle.load(f)
 
 		# Get fishes mass captured in a list and convert nan into 0 and name list aswell
@@ -68,8 +68,8 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 
 
 if __name__ == "__main__":
-	save = r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing'
-	file_name = r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\fishing operatiions V6 V8 V10.xlsx'
+	save = r'../data/vessel_fishing'
+	file_name = r'../data/vessel_fishing/fishing operatiions V6 V8 V10.xlsx'
 	example_dict = extract_vessel_fishing_data(file_name, save, 9001)
 	# with open(r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\haul_9048.pkl', 'rb') as f:
 	# 	example_dict = pickle.load(f)

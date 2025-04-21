@@ -6,9 +6,9 @@ import os
 import pickle
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import numpy as np
-from Glider_class import Glider
-from Vessel_echo_class import Vessel_echo
-from Vessel_fishing_class import Vessel_fishing
+from glider_def_and_processing.Glider_class import Glider
+from glider_echo_processing.Vessel_echo_class import Vessel_echo
+from fishing_data_processing.Vessel_fishing_class import Vessel_fishing
 
 # Set up Mercator projection
 proj = ccrs.Mercator()
@@ -19,7 +19,7 @@ fig, ax1 = plt.subplots(figsize = (10, 5), subplot_kw = {'projection': proj})
 # Adjust longitudinal spreading of transects
 # Find how many transects are to plot
 n = 0
-for root, dirs, files in os.walk(r'C:\Users\G to the A\PycharmProjects\Paper'):
+for root, dirs, files in os.walk(r'/'):
 	for file in files:
 		if file.endswith(".pkl") and file not in ('color_palette.pkl', 'glider_GPS.pkl','CTD.pkl'):
 			n += 1
@@ -29,7 +29,7 @@ longitude_shifts = np.linspace(-0.025, 0.025, n).tolist()
 
 ###### VESSELS ECHO ######
 # Define the directory for vessel echosounding transect files
-directory = r'C:\Users\G to the A\PycharmProjects\Paper\vessels_echo'
+directory = r'data/vessels_echo'
 all_files = os.listdir(directory)
 pkl_files = [f for f in all_files if f.endswith('.pkl')]
 for file in pkl_files:
@@ -44,7 +44,7 @@ for file in pkl_files:
 
 ###### VESSEL FISHING ######
 # Define the directory for vessel echosounding transect files
-directory = r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing'
+directory = r'data/vessel_fishing'
 all_files = os.listdir(directory)
 pkl_files = [f for f in all_files if f.endswith('.pkl') and f != 'color_palette.pkl']
 # Create new axis for piecharts
@@ -70,7 +70,7 @@ for i, file in enumerate(pkl_files):
 ###### GLIDER ######
 
 # Load the list from the extraction_file
-glider_extract = r'C:\Users\G to the A\PycharmProjects\Paper\glider\glider_GPS.pkl'
+glider_extract = r'data/glider/glider_GPS.pkl'
 with open(glider_extract, 'rb') as f:
 	glider_GPS = pickle.load(f)
 
@@ -121,7 +121,7 @@ ax1.add_feature(cfeature.BORDERS, linestyle = ':')
 # ax1.set_title('Sampling effort during the JUVENA 2022 survey')
 ax1.legend(loc = 'upper right')
 # Save fig
-plt.savefig(r'C:\Users\G to the A\PycharmProjects\Paper\plots\sampling_effort.png', transparent = False,
+plt.savefig(r'plots/sampling_effort.png', transparent = False,
             bbox_inches = 'tight')
 # Show plot
 # plt.show()

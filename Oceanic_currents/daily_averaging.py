@@ -1,6 +1,7 @@
 import datetime
 
 import numpy as np
+import pickle
 
 """
 Used to average surface oceanic current's velocity components for each calendar day after being low-passed.
@@ -48,13 +49,38 @@ def calculate_daily_average_component(u, t):
 		if np.any(daily_mask):  # Check if there are any measurements for the current day.
 			u_daily_averaged[:, :, i] = np.nanmean(u[:, :, daily_mask], axis = 2)
 
-	return u_daily_averaged
+	return u_daily_averaged, t2
 
 
 def calculate_average_current(u, v, t):
 	"""
 	Calculates daily averages for both component of the oceanic current
 	"""
-	u_daily_averaged = calculate_daily_average_component(u, t)
-	v_daily_averaged = calculate_daily_average_component(v, t)
-	return u_daily_averaged, v_daily_averaged
+	u_daily_averaged,t2 = calculate_daily_average_component(u, t)
+	v_daily_averaged, t2 = calculate_daily_average_component(v, t)
+	return u_daily_averaged, v_daily_averaged, t2
+
+if __name__ == '__main__':
+
+	path2file = r'../data/surface_currents/IBI_data_filt.pkl'
+	try:
+		with open(path2file, 'rb') as f:
+			data_flt = pickle.load(f)
+			print(f"The file '{path2file}' was imported successfully.")
+		u_flt, v_flt, t=data_flt['u_flt'],data_flt['v_flt'], data_flt['time_ibi']
+		# Average signals for each calendar days
+		u_d_avg,v_d_avg,t2=calculate_average_current(u_flt, v_flt, t)
+
+		IBI_data_filt_avg=data_flt.copy()
+		IBI_data_filt_avg['u_d_avg']=u_d_avg
+		IBI_data_filt_avg['v_d_avg'] = v_d_avg
+		IBI_data_filt_avg['t2'] = t2
+
+		# Save the new data along the old one in a pickle file
+		with open(r'../data/surface_currents/IBI_data_filt_avg.pkl', 'wb') as f:
+			pickle.dump(IBI_data_filt_avg, f)
+			print(f"The variable was saved successfully.")
+	except FileNotFoundError:
+		print(f"Error: The file '{path2file}' was not found.")
+	except Exception as e:
+		print(f"An error occurred while importing the file: {e}")

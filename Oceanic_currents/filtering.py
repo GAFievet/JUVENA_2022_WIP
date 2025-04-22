@@ -1,8 +1,14 @@
+import pickle
+
 import numpy as np
 import scipy.io
 
 from butfilt import butfilt
 
+"""
+Uses butfilt.py to apply a low pass filter to surface oceanic current's velocity components.
+Next step is to average the returned data over a calendar day. See daily_averaging.py  
+"""
 
 def filter_data(data_u: np.ndarray, data_v: np.ndarray, filtering_freq=72) -> tuple[np.ndarray, np.ndarray]:
 	"""
@@ -50,14 +56,17 @@ def filter_data(data_u: np.ndarray, data_v: np.ndarray, filtering_freq=72) -> tu
 
 if __name__ == '__main__':
 
-	path2file = '../data/surface_currents/IBI_data.mat'
+	path2file = r'../data/surface_currents/IBI_data.mat'
 	try:
 		IBI_data = scipy.io.loadmat(path2file)
 		print(f"The file '{path2file}' was imported successfully.")
 		u_flt, v_flt = filter_data(IBI_data['u_ibi'], IBI_data['v_ibi'])
+		IBI_data['u_flt'], IBI_data['v_flt'] = u_flt, v_flt
+		# Save the new data along the old one in a pickle file
+		with open(r'../data/surface_currents/IBI_data_filt.pkl', 'wb') as f:
+			pickle.dump(IBI_data, f)
+			print(f"The variable was saved successfully.")
 	except FileNotFoundError:
 		print(f"Error: The file '{path2file}' was not found.")
 	except Exception as e:
 		print(f"An error occurred while importing the file: {e}")
-
-

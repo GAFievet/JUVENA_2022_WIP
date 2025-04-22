@@ -1,11 +1,9 @@
+from datetime import datetime
+
 import cartopy.crs as ccrs
 import matplotlib.dates as mdates
-from datetime import datetime
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-import pickle
-from matplotlib.text import Text
 import matplotlib.pyplot as plt
-from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+from matplotlib.text import Text
 
 
 class Glider:

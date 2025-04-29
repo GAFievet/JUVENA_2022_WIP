@@ -9,7 +9,7 @@ from matplotlib.patches import Patch
 from matplotlib.text import Text
 
 # Read daily glider GPS files
-directory = r'data/glider/Daily'
+directory = r'data/glider/Daily_GPS'
 all_files = os.listdir(directory)
 csv_files = [f for f in all_files if f.endswith('.csv')]
 days = []

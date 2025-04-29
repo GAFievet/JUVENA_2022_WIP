@@ -29,7 +29,7 @@ class Glider:
 
 		# Create a scatter plot with color based on datetime
 		sc = a.scatter(self.lons, self.lats, c = normalized_time, cmap = 'viridis', transform = ccrs.Geodetic(),
-		               s = 10)
+		               s = 10, label = '_nolegend_')
 
 		# Add a colorbar with a matching colormap
 		cbar = figure.colorbar(sc, ax = a, fraction = 0.042, orientation = 'vertical')

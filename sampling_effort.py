@@ -1,14 +1,18 @@
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
-import matplotlib.pyplot as plt
 import os
 import pickle
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from datetime import datetime
+
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import matplotlib.pyplot as plt
 import numpy as np
-from glider_def_and_processing.Glider_class import Glider
-from glider_echo_processing.Vessel_echo_class import Vessel_echo
+import pandas as pd
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
 from fishing_data_processing.Vessel_fishing_class import Vessel_fishing
+from glider_processing.Glider_class import Glider
+from vessel_echo_processing.Vessel_echo_class import Vessel_echo
 
 # Set up Mercator projection
 proj = ccrs.Mercator()
@@ -17,17 +21,17 @@ proj = ccrs.Mercator()
 fig, ax1 = plt.subplots(figsize = (10, 5), subplot_kw = {'projection': proj})
 
 # Adjust longitudinal spreading of transects
-# Find how many transects are to plot
+# Find how many transects are to be plotted
 n = 0
 for root, dirs, files in os.walk(r'/'):
 	for file in files:
-		if file.endswith(".pkl") and file not in ('color_palette.pkl', 'glider_GPS.pkl','CTD.pkl'):
+		if file.endswith(".pkl") and file not in ('color_palette.pkl', 'glider_GPS.pkl', 'CTD_WIP.pkl'):
 			n += 1
 
 # Calculate longitude shifts
 longitude_shifts = np.linspace(-0.025, 0.025, n).tolist()
 
-###### VESSELS ECHO ######
+# ###### VESSELS ECHO ######
 # Define the directory for vessel echosounding transect files
 directory = r'data/vessels_echo'
 all_files = os.listdir(directory)
@@ -61,20 +65,21 @@ for i, file in enumerate(pkl_files):
 	ax2 = inset_axes(ax1, width = "40%", height = "40%", loc = 2, bbox_to_anchor = (-0.35, 0.6 - 0.2 * i, 0.4, 0.4),
 	                 bbox_transform = ax1.transAxes)
 	if v_f.orientation == 'v':
-		vessel_loc=[v_f.lons[0] + longitude_shifts[0], v_f.lats[0]]
+		vessel_loc = [v_f.lons[0] + longitude_shifts[0], v_f.lats[0]]
 	else:
 		vessel_loc = [v_f.lons[1] + longitude_shifts[0], v_f.lats[1]]
-	v_f.abundance_pie_chart(ax1, ax2,vessel_loc)
+	v_f.abundance_pie_chart(ax1, ax2, vessel_loc)
 	longitude_shifts.pop(0)
 
 ###### GLIDER ######
 
-# Load the list from the extraction_file
-glider_extract = r'data/glider/glider_GPS.pkl'
-with open(glider_extract, 'rb') as f:
-	glider_GPS = pickle.load(f)
+glider_GPS_df = pd.read_csv(r'data/glider/glider.gps.csv')
+GPS_dates = glider_GPS_df['GPS_date'].tolist()
+GPS_dates = [datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S") for date_string in GPS_dates]
+GPS_lons = glider_GPS_df['Longitude'].tolist()
+GPS_lats = glider_GPS_df['Latitude'].tolist()
 
-glider = Glider(glider_GPS[0], glider_GPS[1], glider_GPS[2])
+glider = Glider(GPS_lons, GPS_lats, GPS_dates)
 glider.plot_transect(fig, ax1)
 
 ###### CITIES ######
@@ -124,4 +129,4 @@ ax1.legend(loc = 'upper right')
 plt.savefig(r'plots/sampling_effort.png', transparent = False,
             bbox_inches = 'tight')
 # Show plot
-# plt.show()
+plt.show()

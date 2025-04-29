@@ -33,22 +33,6 @@ def plot_oceanic_currents(u, v, lons, lats, date):
 	ax.add_feature(cfeature.LAND, facecolor = 'lightgray')
 	ax.add_feature(cfeature.COASTLINE)
 
-	# 5. Determine the density of the arrows for plotting
-	# # target_num_arrows = 50  # Aim for around 50 arrows in the plot (adjust as needed)
-	# # lon_step = max(lons.size // int(np.sqrt(target_num_arrows)), 1)
-	# # lat_step = max(lats.size // int(np.sqrt(target_num_arrows)), 1)
-	# arrow_density = 10  # Adjust this value to change the density of arrows
-	# lon_step = (lons.size // arrow_density) or 1
-	# lat_step = (lats.size // arrow_density) or 1
-	#
-	# # 6. Create a meshgrid for the longitude and latitude coordinates, subsampled for arrow density
-	# lon_plot, lat_plot = np.meshgrid(lons[::lon_step], lats[::lat_step])
-	# u_plot = u[::lat_step, ::lon_step]
-	# v_plot = v[::lat_step, ::lon_step]
-	#
-	# # 7. Calculate the magnitude of the current for scaling the arrows
-	# magnitude = np.sqrt(u_plot ** 2 + v_plot ** 2)
-
 	# 8. Add the vector field plot (quiver) with scaled arrows
 	Q = ax.quiver(lons, lats, u, v,
 	              scale = 2 / 2.54,  # Adjust this scale factor for arrow length.  The reference unit is 0.5cm.
@@ -74,31 +58,7 @@ plt.show()
 
 
 if __name__ == '__main__':
-	# # 12. Example usage with dummy data (replace with your actual data)
-	# # Define the longitude and latitude vectors
-	# lons = np.linspace(-5, -1, 21)  # 21 points between -5 and -1
-	# lats = np.linspace(43, 45, 21)  # 21 points between 43 and 45
-	#
-	# # Create dummy u and v velocity data (21x21 arrays)
-	# u = np.zeros((21, 21))
-	# v = np.zeros((21, 21))
-	#
-	# # Create a simple circular flow pattern for the example
-	# center_x, center_y = 10, 10
-	# for i in range(21):
-	#     for j in range(21):
-	#         x = i - center_x
-	#         y = j - center_y
-	#         u[i, j] = -y / 10.0  # Simplified rotational field
-	#         v[i, j] = x / 10.0
-	#
-	# # Create a dummy date
-	# date = datetime.datetime(2023, 10, 26)
-	#
-	# # 13. Call the function to plot the oceanic currents
-	# plot_oceanic_currents(u, v, lons, lats, date)
-
-	# ACTUAL TEST WITH REAL DATA
+	# Plot with IBI data from 2022
 	path2file = r'../data/surface_currents/IBI_data_filt_avg.pkl'
 	try:
 		with (open(path2file, 'rb') as f):
@@ -112,10 +72,10 @@ if __name__ == '__main__':
 
 			# Plot
 			for d in range(len(t)):
-				print(d)
 				plot_oceanic_currents(u[:, :, d], v[:, :, d], lons, lats, t[d])
 				# Save fig
-				plt.savefig(f'../plots/surface_oceanic_currents/ {t[d].strftime("%Y%m%d")}.png', transparent =
+				plt.savefig(f'../plots/surface_oceanic_currents/currents_{t[d].strftime("%Y%m%d")}.png',
+				            transparent =
 				False, bbox_inches = 'tight')
 				plt.close()
 

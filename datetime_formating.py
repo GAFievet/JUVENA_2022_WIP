@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+
 def combine_date_time(ldates: list, ltimes: list):
 	"""
 	Combines lists of integers or strings representing dates (YYYYMMDD)  and strings representing
@@ -41,6 +42,7 @@ def combine_date_time(ldates: list, ltimes: list):
 
 	return lcombined_datetime
 
+
 def matlab2python(matlab_datenum):
 	"""
 	   Converts a MATLAB serial date number to a Python datetime object.
@@ -55,12 +57,12 @@ def matlab2python(matlab_datenum):
 	matlab_reference_base = datetime(1, 1, 1)  # Start with a valid Python date
 
 	# Calculate the total timedelta from the MATLAB reference
-	# Subtract 2 because MATLAB starts counting from day 1 of its reference plus year 0 doesn't exist in Pyhon
-	days_since_reference = matlab_datenum - 2
+	days_since_reference = matlab_datenum - 367
 	delta = timedelta(days = days_since_reference)
 	python_datetime = matlab_reference_base + delta
 
 	return python_datetime
+
 
 if __name__ == "__main__":
 	# # Example usage
@@ -74,10 +76,10 @@ if __name__ == "__main__":
 	# 	print(type(dt))
 	# 	print(dt)
 
-
 	# Example MATLAB to Python
 	matlab_dates = [[738783.9791666666], [738784.0208333334], [738784.0625], [738784.1041666666], [738784.1458333334]]
-
+	# should be : [19-Sep-2022 23:30:00, 20-Sep-2022 00:30:00, 20-Sep-2022 01:30:00,20-Sep-2022 02:30:00,20-Sep-2022
+	# 03:30:00]
 	# Convert each MATLAB date to a Python date
 	python_dates = [matlab2python(date[0]).strftime("%d/%m/%Y %H:%M:%S") for date in matlab_dates]
 

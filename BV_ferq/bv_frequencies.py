@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta
 
-import gsw  # Use gsw instead of seawater
+import gsw
 import matplotlib.dates as mdates
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt

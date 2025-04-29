@@ -12,7 +12,8 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 	:param haul: type int, Haul number to retreive
 	:param saving_path: path where to save the .pkl file
 	:param file: string of the path of an Excel extraction_file containing  vessel transects vessel_mat
-	:return: list [longitudes,latitudes,time_stamps] (i.e., args for plot_vessel_transect class)
+	:return: list [longitudes,latitudes,time_stamps, species, mass fished, colors] (i.e., extracts and compute args for
+	plot_vessel_transect class)
 	"""
 	df = pd.read_excel(file)
 	haul_row = df[df['HAUL'] == haul]
@@ -68,8 +69,8 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 
 
 if __name__ == "__main__":
-	save = r'../data/vessel_fishing'
 	file_name = r'../data/vessel_fishing/fishing operatiions V6 V8 V10.xlsx'
+	save = r'../data/vessel_fishing'
 	example_dict = extract_vessel_fishing_data(file_name, save, 9001)
 	# with open(r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\haul_9048.pkl', 'rb') as f:
 	# 	example_dict = pickle.load(f)

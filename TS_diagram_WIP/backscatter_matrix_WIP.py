@@ -23,6 +23,3 @@ def compute_backscatter_mat(df_backscatter,time,depth,len_sampling):
 	#     Sv_matQ = Sv_matQ.flatten()
 	# Flatten the matrix
 	Sv_matQ = Sv_matQ.flatten()
-
-
-compute_backscatter_matrix()

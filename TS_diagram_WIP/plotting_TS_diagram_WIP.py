@@ -48,8 +48,8 @@ TSdepth=TS_depth(ax1,pressure,latitude,time,salinity,ptemp)
 Sv_ancho_mission = pd.read_csv("all_anchovy_data.csv")
 # Extract time, depth and acoustic volumetric backscattering coeficient (dB)
 time_Sv = Sv_ancho_mission['Time'].values
-depth_Sv = Sv_ancho_mission['Depth_start'].values
-backscatter = Sv_ancho_mission['Sv'].values
+# depth_Sv = Sv_ancho_mission['Depth_start'].values
+# backscatter = Sv_ancho_mission['Sv'].values
 
 # Plot TS-backscattering diagram
 # TSbackscatter=TS_depth(ax1,pressure,latitude,time,salinity,ptemp,backscatter)
@@ -60,11 +60,11 @@ backscatter = Sv_ancho_mission['Sv'].values
 # plotting background density contours:
 
 # plotting scatter plot of theta and s:
-ax2=fig.add_subplot(1,2,2)
-ax[1].scatter(s[idx_depth], theta[idx_depth], c=-dep[idx_depth], s=4, marker='o',  cmap='gray') # scatter(s(idx_depth),theta(idx_depth),4,-dep(idx_depth),"MarkerFaceColor",[0.5 0.5 0.5],"MarkerEdgeColor","none");
-scatter_sv = ax[1].scatter(s[idx_depth], theta[idx_depth], c=Sv_matQ[idx_depth], s=4, cmap='jet') # scatter(s(idx_depth),theta(idx_depth),4,Sv_matQ(idx_depth),'filled');
-plt.colorbar(scatter_sv, ax=ax[1], label='dB', orientation='vertical', extend='both') # a = colorbar; a.Label.String = 'dB';
-ax[1].set_title(title_str) # title(title_str);
+# ax2=fig.add_subplot(1,2,2)
+# ax[1].scatter(s[idx_depth], theta[idx_depth], c=-dep[idx_depth], s=4, marker='o',  cmap='gray') # scatter(s(idx_depth),theta(idx_depth),4,-dep(idx_depth),"MarkerFaceColor",[0.5 0.5 0.5],"MarkerEdgeColor","none");
+# scatter_sv = ax[1].scatter(s[idx_depth], theta[idx_depth], c=Sv_matQ[idx_depth], s=4, cmap='jet') # scatter(s(idx_depth),theta(idx_depth),4,Sv_matQ(idx_depth),'filled');
+# plt.colorbar(scatter_sv, ax=ax[1], label='dB', orientation='vertical', extend='both') # a = colorbar; a.Label.String = 'dB';
+# ax[1].set_title(title_str) # title(title_str);
 
 print("Step 3 conversion to Python complete")
 

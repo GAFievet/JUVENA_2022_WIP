@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+import numpy as np
+
 
 def combine_date_time(ldates: list, ltimes: list):
 	"""
@@ -43,25 +45,11 @@ def combine_date_time(ldates: list, ltimes: list):
 	return lcombined_datetime
 
 
-def matlab2python(matlab_datenum):
-	"""
-	   Converts a MATLAB serial date number to a Python datetime object.
+def matlab2python(matlab_datenum: float) -> datetime:
+    """Converts a MATLAB datenum to a Python datetime object."""
+    days = matlab_datenum - 366  # Offset for Python's datetime epoch
+    return datetime.fromordinal(int(days)) + timedelta(days=days % 1)
 
-	   Args:
-	       matlab_datenum (float): The MATLAB serial date number.
-
-	   Returns:
-	       datetime.datetime: The corresponding Python datetime object.
-	   """
-	# MATLAB reference date: January 0, 0000 (proleptic Gregorian), which is equivalent to Dec 31, year -1
-	matlab_reference_base = datetime(1, 1, 1)  # Start with a valid Python date
-
-	# Calculate the total timedelta from the MATLAB reference
-	days_since_reference = matlab_datenum - 367
-	delta = timedelta(days = days_since_reference)
-	python_datetime = matlab_reference_base + delta
-
-	return python_datetime
 
 
 if __name__ == "__main__":
@@ -81,7 +69,7 @@ if __name__ == "__main__":
 	# should be : [19-Sep-2022 23:30:00, 20-Sep-2022 00:30:00, 20-Sep-2022 01:30:00,20-Sep-2022 02:30:00,20-Sep-2022
 	# 03:30:00]
 	# Convert each MATLAB date to a Python date
-	python_dates = [matlab2python(date[0]).strftime("%d/%m/%Y %H:%M:%S") for date in matlab_dates]
+	python_dates = [matlab2python(date).strftime("%d/%m/%Y %H:%M:%S") for date in np.squeeze(matlab_dates)]
 
 	# Display the results
 	for i, python_date in enumerate(python_dates):

@@ -1,11 +1,13 @@
 from datetime import datetime
-import matplotlib.pyplot as plt
+
 import gsw
+import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd  # For reading CSV files and handling dataframes
+import pandas as pd
 import scipy.io  # For loading MAT files
 
-import TS_depth
+from TS_depth import TS_depth
+from TS_diagram_WIP.TS_acoustic_WIP import ts_backscatter
 from datetime_formating import matlab2python
 
 # --- Step 1: Load and prepare plotting ---
@@ -21,50 +23,48 @@ temperature = np.squeeze(glider_data['temperature'])
 time = [matlab2python(date) for date in np.squeeze(glider_data['time'])]
 
 # --- Load Anchovy data Work In Progress ---
-ancho_data = scipy.io.loadmat("deepest_ancho_start_depth.mat")
-deepest_ancho = ancho_data["deepest_ancho"]
-
+# ancho_data = scipy.io.loadmat("deepest_ancho_start_depth.mat")
+# deepest_ancho = ancho_data["deepest_ancho"]
 
 # --- Derive density and potential temperature ---
-density = gsw.dens(salinity, temperature, pressure)
-pdens = gsw.pden(salinity, temperature, pressure, 0)
-ptemp = gsw.ptmp(salinity, temperature, pressure, 0)
+density = gsw.rho(salinity, temperature, pressure)
+pdens = gsw.density.sigma1(salinity, temperature)
+ptemp = gsw.pt_from_t(salinity, temperature, pressure, 0)
 
 # --- Span of the mission to plot ---
-t1 = datetime.strptime("01/10/2022 00:00:00", "%d/%m/%Y %H:%M:%S")
+t1 = datetime.strptime("23/09/2022 00:00:00", "%d/%m/%Y %H:%M:%S")
 t2 = datetime.strptime("06/10/2022 23:59:59", "%d/%m/%Y %H:%M:%S")
 
-# --- FILTER DATES ---
+# --- FILTER CTD DATA TO PLOT ONLY THE CHOSEN PERIOD  ---
+# Get idx of start and end
 i1 = np.where((time > t1) & (time < t2))[0][0]
 i2 = np.where((time > t1) & (time < t2))[0][-1]
-fig =plt.figure(figsize=(6,8))
-ax1=fig.add_subplot(1,2,1)
+#  Apply to all datas
+pressure = pressure[i1:i2]
+latitude = latitude[i1:i2]
+time = time[i1:i2]
+salinity = salinity[i1:i2]
+ptemp = ptemp[i1:i2]
+# Create fig
+fig = plt.figure(figsize = (6, 8))
+# Create 1st set of axis
+ax1 = fig.add_subplot(1, 2, 1)
 
 # Plot TS-depth diagram
-TSdepth=TS_depth(ax1,pressure,latitude,time,salinity,ptemp)
+TSdepth = TS_depth(ax1, pressure, latitude, time, salinity, ptemp)
 
 # --- Step 3: 2D SCATTER TS-DENSITY/ACOUSTIC ---
+#  Create 2nd set of axis
+ax2 = fig.add_subplot(1, 2, 2)
 # Read anchovy detection file
-Sv_ancho_mission = pd.read_csv("all_anchovy_data.csv")
-# Extract time, depth and acoustic volumetric backscattering coeficient (dB)
-time_Sv = Sv_ancho_mission['Time'].values
-# depth_Sv = Sv_ancho_mission['Depth_start'].values
-# backscatter = Sv_ancho_mission['Sv'].values
-
+acoustic_data = pd.read_csv("all_anchovy_data.csv")
+acoustic_data = acoustic_data.sort_values(by = "Time")  # Ensure the df is sorted along time
+# Filter the period of time
+acoustic_time = [matlab2python(t) for t in acoustic_data["Time"]]
+# Get idx of start and end
+acoustic_i1 = np.where((acoustic_time > t1) & (acoustic_time < t2))[0][0]
+acoustic_i2 = np.where((acoustic_time > t1) & (acoustic_time < t2))[0][-1]
+# Filter dataframe
+acoustic_data = acoustic_data.loc[acoustic_i1:acoustic_i2]
 # Plot TS-backscattering diagram
-# TSbackscatter=TS_depth(ax1,pressure,latitude,time,salinity,ptemp,backscatter)
-
-
-# generating background density contours:
-
-# plotting background density contours:
-
-# plotting scatter plot of theta and s:
-# ax2=fig.add_subplot(1,2,2)
-# ax[1].scatter(s[idx_depth], theta[idx_depth], c=-dep[idx_depth], s=4, marker='o',  cmap='gray') # scatter(s(idx_depth),theta(idx_depth),4,-dep(idx_depth),"MarkerFaceColor",[0.5 0.5 0.5],"MarkerEdgeColor","none");
-# scatter_sv = ax[1].scatter(s[idx_depth], theta[idx_depth], c=Sv_matQ[idx_depth], s=4, cmap='jet') # scatter(s(idx_depth),theta(idx_depth),4,Sv_matQ(idx_depth),'filled');
-# plt.colorbar(scatter_sv, ax=ax[1], label='dB', orientation='vertical', extend='both') # a = colorbar; a.Label.String = 'dB';
-# ax[1].set_title(title_str) # title(title_str);
-
-print("Step 3 conversion to Python complete")
-
+TSbackscatter = ts_backscatter(ax2, pressure, latitude, time, salinity, ptemp, acoustic_data)

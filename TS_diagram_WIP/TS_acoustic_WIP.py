@@ -1,12 +1,15 @@
 import gsw
 import matplotlib.pyplot as plt
 import numpy as np
+
+from acoustic_remapping_WIP import remap_acoustic_data
 from pot_dens_grid import generate_potential_density_grid
 
-def TS_backscatter(ax, time, pressure, latitude, salinity, ptemp,backscatter):
+
+def ts_backscatter(ax, time, pressure, latitude, salinity, ptemp, acoustic_data):
 	"""
-	Takes all the following water sampling data along with a set of axis and returns a TS-depth diagram (scatter plot)
-	over the given period of time.
+	Takes all the following water sampling data along with a set of axis and returns a TS-backscatter diagram
+	including a 'shadow' of the equivalent TS-depth diagram (scatter plot) over the given period of time.
 
 	:param ax: Set of axes to scatter TS-backscatter on
 	:param pressure: list of pressures
@@ -14,8 +17,8 @@ def TS_backscatter(ax, time, pressure, latitude, salinity, ptemp,backscatter):
 	:param time: list of datetime associates to each sampling
 	:param salinity: list of salinity values
 	:param ptemp: list of potential temperature
-	:param backscatter: list backscattering values
-	:param deepest_anchovy: Depth of the deepest anchovy found
+	:param acoustic_data : DataFrame containing acoustic data with time, depth, and acoustic signal
+		columns. Time is expected to be in MATLAB datenum format.
 	:return: scatter plot with salinity (x-axis), temperature (y-axis), density (diagonal), depth of sampling (
 	colorscale)
 	"""
@@ -39,11 +42,17 @@ def TS_backscatter(ax, time, pressure, latitude, salinity, ptemp,backscatter):
 	# idx_depth = np.where(dep > -deepest_anchovy)[0]  # find idx of anchovy above deepest to plot only the data of
 	# # interest WE ACTUTALLY WANT TO PLOT ALL CTD DATA
 	# scatter = ax.scatter(s[idx_depth], theta[idx_depth], c = -dep[idx_depth], s = 4,cmap = 'jet')
-	scatter = ax.scatter(s, theta, c = -dep, s = 4, cmap = 'jet')
-	plt.colorbar(scatter, ax = ax, label = 'Depth (m)', orientation = 'vertical', extend = 'both').ax.invert_yaxis()
+
+	# TS-depth as a 'shadow'
+	ax.scatter(s, theta, c = 'grey')
+	# Generate the backscatter matrix
+	remapped_acoustic_signal = remap_acoustic_data(acoustic_data,time,dep)
+	#  Plot TS-backscatter
+	scatter_acoustic = ax.scatter(s, theta, c = remapped_acoustic_signal, s = 4, cmap = 'jet')
+	plt.colorbar(scatter_acoustic, ax = ax, label = 'Backscattering (dB)', orientation = 'vertical',
+	             extend = 'both').ax.invert_yaxis()
+
 	# set a title
 	ax.set_title(
 		f"TS-depth diagram between {time(0).strftime("%d/%m/%Y HH:MM:SS")} and "
 		f"{time(-1).strftime("%d/%m/%Y HH:MM:SS")}")
-
-	return scatter

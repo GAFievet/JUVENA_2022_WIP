@@ -10,7 +10,7 @@ def TS_depth(ax, time, pressure, latitude, salinity, ptemp):
 
 	:param ax: Set of axes to scatter TS-depth on
 	:param pressure: list of pressures
-	:param latitude: list of latitudes
+	:param latitude: list of latitudes extended to match pressure dim
 	:param time: list of datetime associates to each sampling
 	:param salinity: list of salinity values
 	:param ptemp: list of potential temperature

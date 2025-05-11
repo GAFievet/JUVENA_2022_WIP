@@ -13,11 +13,11 @@ def generate_potential_density_grid(salinity, ptemp):
 	"""
 
 	# salinity range to compute potential density
-	smin = np.min(salinity) - 0.01 * np.min(salinity)
-	smax = np.max(salinity) + 0.01 * np.max(salinity)
+	smin = np.nanmin(salinity) - 0.01 * np.nanmin(salinity)
+	smax = np.nanmax(salinity) + 0.01 * np.nanmax(salinity)
 	# temperature range to compute potential density
-	thetamin = np.min(ptemp) - 0.1 * np.max(ptemp)
-	thetamax = np.max(ptemp) + 0.1 * np.max(ptemp)
+	thetamin = np.nanmin(ptemp) - 0.1 * np.nanmax(ptemp)
+	thetamax = np.nanmax(ptemp) + 0.1 * np.nanmax(ptemp)
 	# pot. density matrix resolution
 	xdim = int(np.round((smax - smin) / 0.1 + 1))
 	ydim = int(np.round((thetamax - thetamin) + 1))

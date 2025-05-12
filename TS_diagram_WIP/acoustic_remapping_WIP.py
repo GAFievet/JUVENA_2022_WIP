@@ -77,8 +77,8 @@ def remap_acoustic_data(
 			acoustic_signal[valid_measurements] / 10)
 
 	interpolator = RegularGridInterpolator(
-		(acoustic_time_unique, -acoustic_depth_unique),  # Invert depth for consistency
-		acoustic_signal_matrix.T,
+		([d.timestamp() for d in acoustic_time_unique], -acoustic_depth_unique),  # Invert depth for consistency
+		acoustic_signal_matrix,
 		method = "linear",  # Or consider "nearest"
 		bounds_error = False,
 		fill_value = np.nan,

@@ -80,58 +80,76 @@ def remap_acoustic_data(
 		raise KeyError(f"Column '{acoustic_signal_col}' not found in acoustic_data.")
 
 	try:
-		# 1. Extract acoustic data and convert time to Python datetime
+		# 1. Extract acoustic data and convert time to Python datetime objects
 		acoustic_time_matlab = acoustic_data[time_col].values
 		acoustic_depth = acoustic_data[depth_col].values
 		acoustic_signal = acoustic_data[acoustic_signal_col].values
+		# Convert MATLAB datenum format to Python datetime objects
 		acoustic_time = np.array([matlab2python(t) for t in acoustic_time_matlab])
 
 		# 2. Create a mapping function (interpolator)
+		# Get unique time values from the acoustic data
 		acoustic_time_unique = np.unique(acoustic_time)
+		# Get unique depth values from the acoustic data
 		acoustic_depth_unique = np.unique(acoustic_depth)
 
+		# Find the indices of each acoustic time and depth value in the unique arrays
+		# Subtract 1 to make the indices zero-based
 		time_indices = np.searchsorted(acoustic_time_unique, acoustic_time) - 1
 		depth_indices = np.searchsorted(acoustic_depth_unique, acoustic_depth) - 1
 
 		# --- Sparse Matrix Creation ---
+		# Identify valid indices where both time and depth indices are within the bounds of the unique arrays
 		valid_time_indices = (time_indices >= 0) & (time_indices < len(acoustic_time_unique))
 		valid_depth_indices = (depth_indices >= 0) & (depth_indices < len(acoustic_depth_unique))
 		valid_measurements = valid_time_indices & valid_depth_indices
 
-		sparse_data = 10 ** (acoustic_signal[valid_measurements] / 10)  # Convert Sv to linear scale
+		# Convert acoustic signal from dB (Sv) to linear scale
+		sparse_data = 10 ** (acoustic_signal[valid_measurements] / 10)
+		# Use the valid indices to create the row and column indices for the sparse matrix
 		sparse_row_indices = time_indices[valid_measurements]
 		sparse_col_indices = depth_indices[valid_measurements]
 
+		# Create a Compressed Sparse Row (CSR) matrix to efficiently store the acoustic data
+		# The shape of the matrix is determined by the number of unique time and depth values
 		acoustic_signal_matrix = csr_matrix(
 			(sparse_data, (sparse_row_indices, sparse_col_indices)),
 			shape = (len(acoustic_time_unique), len(acoustic_depth_unique)),
 		)
 		# --- End Sparse Matrix Creation ---
 
+		# Create a regular grid interpolator
+		# Use the unique time (converted to timestamps) and inverted unique depth as the grid
 		# Invert depth for consistency with oceanographic convention (depth increases downwards)
 		interpolator = RegularGridInterpolator(
 			([d.timestamp() for d in acoustic_time_unique], -acoustic_depth_unique),
 			acoustic_signal_matrix,
 			method = interpolation_method,
 			bounds_error = False,
-			fill_value = np.nan,  # Use NaN for points outside the input data's convex hull
+			# Use NaN for points outside the input data's convex hull
+			fill_value = np.nan,
 		)
 
 		# 3. Generate target grid coordinates
+		# Create a meshgrid from the target time and inverted target depth arrays
 		# Invert depth for consistency with oceanographic convention
 		target_time_grid, target_depth_grid = np.meshgrid(target_time, -target_depth)
+		# Stack the time and depth grids to create the points at which to interpolate
 		target_points = np.stack((target_time_grid, target_depth_grid), axis = -1)
 
-		# 4. Remap acoustic data onto the target grid
+		# 4. Remap acoustic data onto the target grid using the interpolator
 		remapped_acoustic_signal = interpolator(target_points).flatten()
 
-		# 5. Convert back to dB
+		# 5. Convert the remapped acoustic signal back to dB (Sv)
+		# Apply the conversion only to non-zero values to avoid log(0) errors
 		remapped_acoustic_signal[remapped_acoustic_signal != 0] = 10 * np.log10(
 			remapped_acoustic_signal[remapped_acoustic_signal != 0]
 		)
-		remapped_acoustic_signal[remapped_acoustic_signal == 0] = np.nan  # Ensure 0s become NaN
+		# Set zero values to NaN, as they represent no signal in the linear scale
+		remapped_acoustic_signal[remapped_acoustic_signal == 0] = np.nan
 
 		return remapped_acoustic_signal
 
 	except Exception as e:
+		# Raise a general exception if any error occurs during the process
 		raise Exception(f"An unexpected error occurred during the remapping process: {e}")

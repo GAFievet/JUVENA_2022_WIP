@@ -20,7 +20,7 @@ def load_dot_mat_CTD(CTD_path=CTD_path, CTD_file_name=CTD_file_name):
 	"""
 	:param path: path of the file
 	:param file_name: .mat file
-	:return: date, cond, depth, lon, lat, pressure, salinity, temp arrays
+	:return: date, cond, depth, lon, lat, pressure, abs_sal, temp arrays
 	"""
 	# Load data from .mat file
 	p = os.path.join(CTD_path, CTD_file_name)
@@ -32,7 +32,7 @@ def load_dot_mat_CTD(CTD_path=CTD_path, CTD_file_name=CTD_file_name):
 	lon = data['longitude'][0:915]
 	lat = data['latitude'][0:915]
 	pressure = data['pressure'][0:915]
-	salinity = data['salinity'][0:915]
+	salinity = data['abs_sal'][0:915]
 	temp = data['temperature'][0:915]
 	# Convert to python-readable datetime
 	date = [(datetime(1, 1, 1) + timedelta(days = matlab_date - 367)) for matlab_date in date]

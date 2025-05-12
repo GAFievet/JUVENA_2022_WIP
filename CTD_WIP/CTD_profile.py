@@ -12,7 +12,7 @@ def daily_profiles(data2plot, first_day, last_day, depths, axis=None, cscale=Non
 
     Args:
         data2plot (str): "temperature", "potential temperature", "density",
-                       "potential density", or "salinity".
+                       "potential density", or "abs_sal".
         first_day (datetime.datetime): Start time limit of the profile.
         last_day (datetime.datetime): End time limit of the profile.
         depths (list or tuple): [shallowest, deepest] depth limits.
@@ -34,8 +34,8 @@ def daily_profiles(data2plot, first_day, last_day, depths, axis=None, cscale=Non
     latitude = data_profiles["latitude"]
     longitude = data_profiles["longitude"]
     pdens = data_profiles["pdens"]
-    ptemp = data_profiles["ptemp"]
-    salinity = data_profiles["salinity"]
+    ptemp = data_profiles["cons_temp"]
+    salinity = data_profiles["abs_sal"]
     temperature = data_profiles["temperature"]
     time = data_profiles["time"].flatten()  # Flatten time to 1D array
 
@@ -77,7 +77,7 @@ def daily_profiles(data2plot, first_day, last_day, depths, axis=None, cscale=Non
         s_MLD = MLD[idxStart:idxEnd + 1, :]
         colorbar_label = "Potential density (kg/m³)"  # Changed unit
         cmap = cmo.dense
-    elif data2plot == "salinity":
+    elif data2plot == "abs_sal":
         s_data = salinity[idxStart:idxEnd + 1, closestIdxmin:closestIdxmax + 1].T
         s_MLD = MLD[idxStart:idxEnd + 1, :]
         colorbar_label = "Salinity (psu)"
@@ -126,7 +126,7 @@ def daily_profiles(data2plot, first_day, last_day, depths, axis=None, cscale=Non
 if __name__ == '__main__':
     # Example Usage
     parser = argparse.ArgumentParser(description="Plot CTD_WIP profiles")
-    parser.add_argument("data2plot", type=str, choices=["temperature", "potential temperature", "density", "potential density", "salinity"], help="Data type to plot")
+    parser.add_argument("data2plot", type=str, choices=["temperature", "potential temperature", "density", "potential density", "abs_sal"], help="Data type to plot")
     parser.add_argument("first_day", type=lambda s: datetime.datetime.strptime(s, "%d-%b-%Y %H:%M:%S"), help="Start date (e.g., 24-Sep-2022 00:00:00)")
     parser.add_argument("last_day", type=lambda s: datetime.datetime.strptime(s, "%d-%b-%Y %H:%M:%S"), help="End date (e.g., 24-Sep-2022 23:59:00)")
     parser.add_argument("depths", type=float, nargs=2, help="Depth limits (e.g., 0 200)")

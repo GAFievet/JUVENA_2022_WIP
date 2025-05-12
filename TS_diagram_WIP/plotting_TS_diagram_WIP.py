@@ -12,7 +12,7 @@ import pandas as pd
 import scipy.io as sio  # For loading MAT files
 from find_time_index import find_time_indices
 from TS_depth import TS_depth
-from TS_diagram_WIP.TS_acoustic_WIP import ts_backscatter
+from TS_diagram_WIP.TS_acoustic import ts_backscatter
 from datetime_formating import matlab2python
 
 # --- Step 1: Load and prepare plotting ---

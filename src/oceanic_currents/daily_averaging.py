@@ -1,7 +1,7 @@
 import datetime
 import pickle
 import numpy as np
-from datetime_formating import matlab2python
+from src.core.datetime_formating import matlab2python
 """
 Used to average surface oceanic current's velocity components for each calendar day after being low-passed.
 """
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 		IBI_data_filt_avg['t2'] = t2
 
 		# Save the new data along the old one in a pickle file
-		with open(r'../data/surface_currents/IBI_data_filt_avg.pkl', 'wb') as f:
+		with open(r'../../data/surface_currents/IBI_data_filt_avg.pkl', 'wb') as f:
 			pickle.dump(IBI_data_filt_avg, f)
 			print(f"The variable was saved successfully.")
 	except FileNotFoundError:

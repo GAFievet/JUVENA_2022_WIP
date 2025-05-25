@@ -1,0 +1,44 @@
+# PyCharm-specific files and folders
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Python virtual environments
+venv/
+.venv/
+env/
+.env/
+*/venv/
+*/env/
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+.Python/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Logs and databases (if not explicitly versioned)
+*.log
+*.sqlite3
+
+# Operating System files
+.DS_Store # macOS
+Thumbs.db # Windows
+
+# Data and plots (if they are generated and not source data)
+# Si 'data' contient des données sources que vous voulez versionner,
+# supprimez ou commentez la ligne correspondante.
+# Si 'plots' contient des images générées qui peuvent être recréées à partir du code,
+# il est bon de les ignorer.
+data/
+plots/
+
+# Jupyter Notebook checkpoint (if you add notebooks later)
+.ipynb_checkpoints/

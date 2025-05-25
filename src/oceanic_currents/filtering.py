@@ -63,7 +63,7 @@ if __name__ == '__main__':
 		u_flt, v_flt = filter_data(IBI_data['u_ibi'], IBI_data['v_ibi'])
 		IBI_data['u_flt'], IBI_data['v_flt'] = u_flt, v_flt
 		# Save the new data along the old one in a pickle file
-		with open(r'../data/surface_currents/IBI_data_filt.pkl', 'wb') as f:
+		with open(r'../../data/surface_currents/IBI_data_filt.pkl', 'wb') as f:
 			pickle.dump(IBI_data, f)
 			print(f"The variable was saved successfully.")
 	except FileNotFoundError:

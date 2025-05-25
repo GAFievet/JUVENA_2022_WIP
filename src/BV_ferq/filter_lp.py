@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from scipy import signal
 from scipy.signal import filtfilt
 
-from BV_ferq.bv_frequencies import load_dot_mat_CTD, compute_bv_freq, bv_freq_avg_every_k_meters
+from src.BV_ferq.bv_frequencies import load_dot_mat_CTD, compute_bv_freq, bv_freq_avg_every_k_meters
 
 
 def get_sampling_freq_total_time(signal, time_days):
@@ -61,7 +61,7 @@ def plot_filtering(X, signal, filtered_signal, signal_color,fc_h):
 
 
 if __name__ == "__main__":
-	from glider_survey_profile import extract_curves
+	from src.core.glider_survey_profile import extract_curves
 	date, cond, depth, lon, lat, pressure, salinity, temp = load_dot_mat_CTD()
 	X1, Y1, n = compute_bv_freq(salinity, temp, pressure, lat, date, depth)
 	X2, Y2, bv_mean, depth_avg = bv_freq_avg_every_k_meters(n, depth, date)

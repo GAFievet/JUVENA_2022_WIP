@@ -3,8 +3,6 @@ from datetime import datetime
 import gsw
 import matplotlib
 
-from TS_diagram_WIP.find_time_index import find_time_indices
-
 matplotlib.use('qt5agg')
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,12 +10,12 @@ import pandas as pd
 import scipy.io as sio  # For loading MAT files
 from find_time_index import find_time_indices
 from TS_depth import TS_depth
-from TS_diagram_WIP.TS_acoustic import ts_backscatter
-from datetime_formating import matlab2python
+from src.TS_diagram_WIP.TS_acoustic import ts_backscatter
+from src.core.datetime_formating import matlab2python
 
 # --- Step 1: Load and prepare plotting ---
 # --- Load glider & CTD data ---
-path_CTD = r'../data/glider/CTD/PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'
+path_CTD = r'../../data/glider/CTD/PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'
 try:
 	glider_data = sio.loadmat(path_CTD)
 	# Extract data
@@ -94,7 +92,7 @@ TSdepth = TS_depth(ax1 ,time, pressure, latitude_extended, abs_sal, cons_tempera
 #  Create 2nd set of axis
 ax2 = fig.add_subplot(1, 2, 2)
 # Read anchovy detection file
-acoustic_data = pd.read_csv("../data/glider/echosounder/all_anchovy_data.csv")
+acoustic_data = pd.read_csv("../../data/glider/echosounder/all_anchovy_data.csv")
 acoustic_data = acoustic_data.sort_values(by = "Time")  # Ensure the df is sorted along time
 # Filter the period of time
 acoustic_time = [matlab2python(t) for t in acoustic_data["Time"]]

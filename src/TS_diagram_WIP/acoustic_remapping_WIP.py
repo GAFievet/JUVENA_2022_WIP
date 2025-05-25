@@ -3,7 +3,7 @@ import pandas as pd
 from scipy.interpolate import RegularGridInterpolator
 from scipy.sparse import csr_matrix
 
-from datetime_formating import matlab2python
+from src.core.datetime_formating import matlab2python
 
 
 def remap_acoustic_data(

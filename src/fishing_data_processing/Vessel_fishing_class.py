@@ -2,7 +2,7 @@ import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import numpy as np
 
-from fishing_data_processing.closest_point_on_edge import get_closest_point_on_edge
+from src.fishing_data_processing.closest_point_on_edge import get_closest_point_on_edge
 
 
 class Vessel_fishing:

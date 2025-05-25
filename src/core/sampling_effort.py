@@ -10,9 +10,9 @@ import pandas as pd
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
-from fishing_data_processing.Vessel_fishing_class import Vessel_fishing
-from glider_processing.Glider_class import Glider
-from vessel_echo_processing.Vessel_echo_class import Vessel_echo
+from src.fishing_data_processing.Vessel_fishing_class import Vessel_fishing
+from src.glider_processing.Glider_class import Glider
+from src.vessel_echo_processing.Vessel_echo_class import Vessel_echo
 
 # Set up Mercator projection
 proj = ccrs.Mercator()
@@ -73,7 +73,7 @@ for i, file in enumerate(pkl_files):
 
 ###### GLIDER ######
 
-glider_GPS_df = pd.read_csv(r'data/glider/glider.gps.csv')
+glider_GPS_df = pd.read_csv(r'../../data/glider/glider.gps.csv')
 GPS_dates = glider_GPS_df['GPS_date'].tolist()
 GPS_dates = [datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S") for date_string in GPS_dates]
 GPS_lons = glider_GPS_df['Longitude'].tolist()

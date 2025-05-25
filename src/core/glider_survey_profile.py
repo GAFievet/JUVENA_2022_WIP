@@ -7,8 +7,8 @@ from matplotlib import pyplot as plt
 from scipy.interpolate import interp1d
 from scipy.io import loadmat
 
-from BV_ferq.bv_frequencies import load_dot_mat_CTD, compute_bv_freq, bv_freq_avg_every_k_meters
-from BV_ferq.filter_lp import get_sampling_freq_total_time, get_cutoff_freq_norm, get_lp_butter_lp_filter_param, \
+from src.BV_ferq.bv_frequencies import load_dot_mat_CTD, compute_bv_freq, bv_freq_avg_every_k_meters
+from src.BV_ferq.filter_lp import get_sampling_freq_total_time, get_cutoff_freq_norm, get_lp_butter_lp_filter_param, \
 	lp_filter
 
 CTD_file_name = r'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'

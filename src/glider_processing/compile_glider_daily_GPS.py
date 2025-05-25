@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from datetime_formating import combine_date_time
+from src.core.datetime_formating import combine_date_time
 
 """
 Compiles daily glider GPS .csv files and format the date and time.

@@ -1,10 +1,6 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-from datetime_formating import combine_date_time
 import pickle
 import os
-from datetime import datetime
 
 
 def extract_vessel_fishing_data(file, saving_path, haul):
@@ -69,7 +65,7 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 
 
 if __name__ == "__main__":
-	file_name = r'../data/vessel_fishing/fishing operatiions V6 V8 V10.xlsx'
+	file_name = r'../../data/vessel_fishing/fishing operatiions V6 V8 V10.xlsx'
 	save = r'../data/vessel_fishing'
 	example_dict = extract_vessel_fishing_data(file_name, save, 9001)
 	# with open(r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\haul_9048.pkl', 'rb') as f:

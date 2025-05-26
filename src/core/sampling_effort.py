@@ -10,6 +10,7 @@ import pandas as pd
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
+from src import config
 from src.fishing_data_processing.Vessel_fishing_class import Vessel_fishing
 from src.glider_processing.Glider_class import Glider
 from src.vessel_echo_processing.Vessel_echo_class import Vessel_echo
@@ -100,7 +101,12 @@ ax1.text(-1.92114 - offset, 43.32531 - 1.5 * offset, 'Pasaia', transform = ccrs.
 
 ###### TUNING PLOT ######
 # Set map extent to the south-eastern Bay of Biscay
-ax1.set_extent([-3.5, -1.8, 43.2, 44.35], crs = ccrs.PlateCarree())
+ax1.set_extent(
+	[config.BAY_OF_BISCAY_SE_BOUNDS['min_lon'],
+	 config.BAY_OF_BISCAY_SE_BOUNDS['max_lon'],
+	 config.BAY_OF_BISCAY_SE_BOUNDS['min_lat'],
+	 config.BAY_OF_BISCAY_SE_BOUNDS['max_lat']], crs = ccrs.PlateCarree())
+
 # Add coastlines and gridlines
 ax1.coastlines(resolution = '10m')  # res can be 10m, 50m or 110m
 # Define gridline properties

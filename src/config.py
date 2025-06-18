@@ -21,7 +21,7 @@ PLOTS_DIR = os.path.join(BASE_DIR, 'plots')
 # from acoustic software like Echoview.
 
 # BoB Bathymetry 15 sec arc
-RAW_BATHY= os.path.join(INPUT_DATA_DIR, 'bob_15s_bathy.tiff')
+RAW_BATHY= os.path.join(INPUT_DATA_DIR, 'gebco_2024_n48.0_s43.0_w-8.0_e-1.0.tif')
 # SURFACE CURRENTS
 RAW_SURFACE_CURRENT = os.path.join(INPUT_DATA_DIR, 'surface_currents', 'IBI_data.mat')
 # VESSEL ACOUSTIC
@@ -32,7 +32,7 @@ RAW_VESSEL_FISHING = os.path.join(INPUT_DATA_DIR, 'vessel', 'vessel_fishing','Se
 # Ramon Margalef (BIG)
 RAW_RADIALS_AA=os.path.join(INPUT_DATA_DIR, 'vessel','radialesAA.txt')
 # Emma Bardan (SMALL)
-RAW_RADIALS_AA=os.path.join(INPUT_DATA_DIR, 'vessel','radialesEB.txt')
+RAW_RADIALS_EB=os.path.join(INPUT_DATA_DIR, 'vessel','radialesEB.txt')
 
 ###  GLIDER  ###
 # RAW GLIDER DIR
@@ -43,6 +43,8 @@ RAW_MLD_FILTERED = os.path.join(RAW_GLIDER_DIR, 'CTD', 'MLD_filtered.mat')
 RAW_CTD = os.path.join(RAW_GLIDER_DIR, 'CTD', 'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat')
 # RAW GPS
 RAW_GPS = os.path.join(RAW_GLIDER_DIR, 'glider.gps.csv')
+# RAW PATH BATHY
+RAW_GLIDER_BATHY=os.path.join(RAW_GLIDER_DIR, 'floor_depth_profile_2309_0610.mat')
 
 # --- Output File Names (for processed data, visualization-ready) ---
 # SURFACE CURRENTS
@@ -63,20 +65,21 @@ PROCESSED_GLIDER_DIR = os.path.join(PROCESSED_DATA_DIR, 'glider')
 # DAILY GPS
 DAILY_GLIDER_GPS = os.path.join(PROCESSED_GLIDER_DIR, 'Daily_GPS', 'Glider_*.gps.csv')
 # ALL ANCHOVY DATA GLIDER ECHO
-PROCESSED_GLIDER_ECHO = os.path.join(PROCESSED_GLIDER_DIR, 'echosounder', 'all_anchovy_data.csv')
+PROCESSED_GLIDER_ANCHO = os.path.join(PROCESSED_GLIDER_DIR, 'echosounder', 'Juvenile_Anchovy_datasets_Sv_lin.csv')
 
 # --- Plot File Names (.png) ---
 # SURFACE OCEANIC CURRENTS MAPS
 SURFACE_OCEANIC_CURRENTS_MAPS = os.path.join(PLOTS_DIR, 'surface_oceanic_currents')
 SAMPLING_EFFORTS = os.path.join(PLOTS_DIR, 'map_sampling_effort.png')
-
+JUVENA2022_OVERVIEW=os.path.join(PLOTS_DIR, 'map_JUVENA2022_overview.png')
+SURVEY_PROFILE=os.path.join(PLOTS_DIR, 'survey_profile.png')
 # --- Geographic and Temporal Bounds ---
 # Define the regions of interest for the Southeast Bay of Biscay
 BAY_OF_BISCAY={
 	'min_lat': 43,
 	'max_lat': 48,
-	'min_lon': -6,
-	'max_lon': 0.5
+	'min_lon': -8,
+	'max_lon': -1
 }
 # Adjust these coordinates as precisely as needed for your study area
 BAY_OF_BISCAY_SE_BOUNDS = {

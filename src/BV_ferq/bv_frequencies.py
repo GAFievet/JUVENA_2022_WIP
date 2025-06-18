@@ -9,22 +9,19 @@ import numpy as np
 import scipy.io as sio
 from matplotlib.ticker import MultipleLocator
 
+from src import config
 
 # from matplotlib.text import Text
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-CTD_path = r'C:/Users/G to the A/Desktop/MT/Programming/CTD'
-CTD_file_name = 'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'
-
-def load_dot_mat_CTD(CTD_path=CTD_path, CTD_file_name=CTD_file_name):
+def load_dot_mat_CTD(CTD_data=config.RAW_CTD):
 	"""
 	:param path: path of the file
 	:param file_name: .mat file
 	:return: date, cond, depth, lon, lat, pressure, abs_sal, temp arrays
 	"""
 	# Load data from .mat file
-	p = os.path.join(CTD_path, CTD_file_name)
-	data = sio.loadmat(p, squeeze_me = True)  # Squeeze arrays to avoid singletons
+	data = sio.loadmat(CTD_data, squeeze_me = True)  # Squeeze arrays to avoid singletons
 	# Init. clear variables
 	date = data['time'][0:915]
 	cond = data['conductivity'][0:915]
@@ -32,7 +29,7 @@ def load_dot_mat_CTD(CTD_path=CTD_path, CTD_file_name=CTD_file_name):
 	lon = data['longitude'][0:915]
 	lat = data['latitude'][0:915]
 	pressure = data['pressure'][0:915]
-	salinity = data['abs_sal'][0:915]
+	salinity = data['salinity'][0:915]
 	temp = data['temperature'][0:915]
 	# Convert to python-readable datetime
 	date = [(datetime(1, 1, 1) + timedelta(days = matlab_date - 367)) for matlab_date in date]

@@ -1,5 +1,6 @@
 import glob
 import os
+
 # Set the GDAL_DATA environment variable
 # This is a safety measure if GDAL_DATA is not consistently recognized by your Conda environment
 os.environ['GDAL_DATA'] = r'C:\Users\G to the A\anaconda3\envs\JUVENA2022\Library\share\gdal'
@@ -36,6 +37,8 @@ ax1.add_feature(cfeature.OCEAN, facecolor = 'white')
 ax1.add_feature(cfeature.RIVERS)
 # Borders
 ax1.add_feature(cfeature.BORDERS, linestyle = ':')
+# Add coastlines and gridlines
+ax1.coastlines(resolution = '10m')  # res can be 10m, 50m or 110m
 # endregion
 
 # region ###### CITIES ######
@@ -123,13 +126,14 @@ ax1.set_extent(
 	 config.BAY_OF_BISCAY_SE_BOUNDS['min_lat'],
 	 config.BAY_OF_BISCAY_SE_BOUNDS['max_lat']], crs = ccrs.PlateCarree())
 
-# Add coastlines and gridlines
-ax1.coastlines(resolution = '10m')  # res can be 10m, 50m or 110m
 # Add legend
-ax1.legend(bbox_to_anchor = (-0.05, 1), loc = 'upper right', borderaxespad = 0., ncol = 1)  # MODIFIED LINE
+# ax1.legend(bbox_to_anchor = (-0.05, 1), loc = 'upper right', borderaxespad = 0., ncol = 1)
 # Adjust the left margin to make space for the legend
-plt.subplots_adjust(left = 0.25)  # MODIFIED LINE (add this line if not present, or adjust value if present)
-## Define gridline properties
+# plt.subplots_adjust(left = 0.25)
+ax1.legend(bbox_to_anchor = (0.7, -0.4), loc = 'lower center', borderaxespad = 0., ncol = 3)
+plt.subplots_adjust(bottom = 0.2)
+
+#region Define gridline properties
 # gl = ax1.gridlines(crs = ccrs.PlateCarree(), draw_labels = True, linewidth = 1, color = 'gray', alpha = 0.5,
 #                    linestyle = '--')
 # format coordinates
@@ -141,7 +145,6 @@ plt.subplots_adjust(left = 0.25)  # MODIFIED LINE (add this line if not present,
 # endregion
 
 # Save fig
-plt.savefig(config.SAMPLING_EFFORTS, transparent = False,
-            bbox_inches = 'tight')
+plt.savefig(config.SAMPLING_EFFORTS, transparent = True, dpi = config.DEFAULT_PLOT_DPI, bbox_inches = 'tight')
 # Show plot
 # plt.show()

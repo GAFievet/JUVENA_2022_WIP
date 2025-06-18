@@ -7,36 +7,38 @@ from matplotlib import pyplot as plt
 from scipy.interpolate import interp1d
 from scipy.io import loadmat
 
+from src import config
 from src.BV_ferq.bv_frequencies import load_dot_mat_CTD, compute_bv_freq, bv_freq_avg_every_k_meters
 from src.BV_ferq.filter_lp import get_sampling_freq_total_time, get_cutoff_freq_norm, get_lp_butter_lp_filter_param, \
 	lp_filter
 
-CTD_file_name = r'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat'
 
-TC_path = r"C:\Users\G to the A\Desktop\MT\Programming\Accoustic\Thermocline_data"
+# TC_path = r"C:\Users\G to the A\Desktop\MT\Programming\Accoustic\Thermocline_data"
+#
+# Bathy_path = r"C:\Users\G to the A\Desktop\MT\Programming\Accoustic"
+#
+# ancho_path = r"C:\Users\G to the A\Desktop\MT\Programming\Accoustic\MATLAB RESULTS\Datasets making - stats"
 
-Bathy_path = r"C:\Users\G to the A\Desktop\MT\Programming\Accoustic"
 
-ancho_path = r"C:\Users\G to the A\Desktop\MT\Programming\Accoustic\MATLAB RESULTS\Datasets making - stats"
-
-
-def load_dot_mat_mld(MLD_path=TC_path, MLD_file_name="MLD_filtered.mat"):
+def load_dot_mat_mld(MLD_path=config.RAW_MLD_FILTERED, MLD_file_name="MLD_filtered.mat"):
 	# Load data
-	data_mld_filtered = loadmat(f"{MLD_path}\\{MLD_file_name}", squeeze_me = True)
+	# data_mld_filtered = loadmat(f"{MLD_path}\\{MLD_file_name}", squeeze_me = True)
+	data_mld_filtered = loadmat(MLD_path, squeeze_me = True)
 	mld = data_mld_filtered['MLD_7h_LP'][0:915].reshape(-1, 1).flatten()
 
 	return mld
 
 
-def load_dot_mat_bathy(bathy_path=Bathy_path, bathy_file_name="floor_depth_profile_2309_0610.mat"):
-	data_bathy = loadmat(f"{bathy_path}\\{bathy_file_name}")
+def load_dot_mat_bathy(bathy_path=config.RAW_GLIDER_BATHY, bathy_file_name="floor_depth_profile_2309_0610.mat"):
+	# data_bathy = loadmat(f"{bathy_path}\\{bathy_file_name}")
+	data_bathy = loadmat(bathy_path)
 	bathy = data_bathy['bathy_profile'].reshape(-1, 1).flatten()
 
 	return bathy
 
 
-def load_dot_mat_ancho(ancho_path=ancho_path, ancho_file_name="Juvenile_Anchovy_datasets_Sv_lin.csv"):
-	acoustic_df = pd.read_csv(f"{ancho_path}\\{ancho_file_name}")
+def load_dot_mat_ancho(ancho_path=config.PROCESSED_GLIDER_ANCHO):
+	acoustic_df = pd.read_csv(ancho_path)
 	acoustic_df = acoustic_df[acoustic_df['Sv_lin'] != 0]  # Filter out null values
 	acoustic_df['Time_avg_UTC'] = pd.to_datetime(acoustic_df['Time_avg_UTC'], format = '%d-%b-%Y %H:%M:%S')
 
@@ -137,7 +139,7 @@ def fine_tune_acoustic_profile(ax, cbar, date):
 	storm_end = datetime.strptime("30/09/2022 23:59:59", "%d/%m/%Y %H:%M:%S")
 	ymin, ymax = ax[0].get_ylim()
 	l = storm_end - storm_start
-	rect = plt.Rectangle((storm_start, ymin), l, abs(ymax - ymin), facecolor = 'blue', alpha = 0.1, label = "Storm")
+	rect = plt.Rectangle((storm_start, ymin), l, abs(ymax - ymin), facecolor = 'blue', alpha = 0.1, label = "Gale")
 	ax[0].add_patch(rect)  # Red frame
 
 	# Combine legends from both axes
@@ -162,7 +164,6 @@ if __name__ == "__main__":
 	                                      depth_avg, 72)
 	fine_tune_acoustic_profile(ax, cbar, date)
 
-	plt.savefig(r'plots/echosounding_profile.png', transparent = False,
-	            bbox_inches = 'tight')
+	plt.savefig(config.SURVEY_PROFILE, transparent = False, dpi = config.DEFAULT_PLOT_DPI, bbox_inches = 'tight')
 
 # plt.show()

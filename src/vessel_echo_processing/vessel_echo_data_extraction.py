@@ -1,7 +1,10 @@
-import pandas as pd
-from src.core.datetime_formating import combine_date_time
-import pickle
 import os
+import pickle
+
+import pandas as pd
+
+from src import config
+from src.core.datetime_formating import combine_date_time
 
 
 def extract_vessel_echo_data(file, saving_path):
@@ -24,7 +27,9 @@ def extract_vessel_echo_data(file, saving_path):
 
 
 if __name__ == "__main__":
-	base_path = r'../../data/vessels_echo'
-	vessel_0904 = extract_vessel_echo_data(os.path.join(base_path, 'EB20220904_fullwatercolumn.csv'), base_path)
-	vessel_0930 = extract_vessel_echo_data(os.path.join(base_path, 'RM20220930_fullwatercolumn.csv'), base_path)
-	vessel_1001 = extract_vessel_echo_data(os.path.join(base_path, 'RM20221001_fullwatercolumn.csv'), base_path)
+	vessel_0904 = extract_vessel_echo_data(os.path.join(config.RAW_VESSEL_ECHO, 'EB20220904_fullwatercolumn.csv'),
+	                                       config.VESSEL_ECHO)
+	vessel_0930 = extract_vessel_echo_data(os.path.join(config.RAW_VESSEL_ECHO, 'RM20220930_fullwatercolumn.csv'),
+	                                       config.VESSEL_ECHO)
+	vessel_1001 = extract_vessel_echo_data(os.path.join(config.RAW_VESSEL_ECHO, 'RM20221001_fullwatercolumn.csv'),
+	                                       config.VESSEL_ECHO)

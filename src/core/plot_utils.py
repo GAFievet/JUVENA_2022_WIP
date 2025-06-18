@@ -48,7 +48,7 @@ def plot_isobaths(ax, bathymetry_file=config.RAW_BATHY, isobath_levels=[-200, -1
 			                     colors = [isobath_colors[i]], linestyles = '--', linewidths = 0.5,
 			                     transform = ccrs.PlateCarree(), zorder=0)
 			# Add labels to the isobaths (optional, but useful for identification)
-			ax.clabel(contour, inline = True, fontsize = 10, fmt = f'{level}m', inline_spacing=5)
+			# ax.clabel(contour, inline = True, fontsize = 2, fmt = f'{level}m', inline_spacing=5)
 
 	except FileNotFoundError:
 		print(f"Error: Bathymetry file '{bathymetry_file}' not found.")

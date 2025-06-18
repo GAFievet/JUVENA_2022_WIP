@@ -2,11 +2,11 @@ import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.fishing_data_processing.closest_point_on_edge import get_closest_point_on_edge
+from src.vessel_fishing_processing.closest_point_on_edge import get_closest_point_on_edge
 
 
 class Vessel_fishing:
-	def __init__(self, loc_i, loc_f, time_stamp, species, mass_fished, colors):
+	def __init__(self, loc_i, loc_f, time_stamp, species, mass_fished, colors, transect):
 		"""
 		:type colors: color palette
 		:param loc_i: init [longitude, latitude]
@@ -14,6 +14,7 @@ class Vessel_fishing:
 		:param time_stamp: Date (datetime object)
 		:param species: List of species fished as str acronyms
 		:param mass_fished: list of proportion for each of these species (sum~1)
+		:param transect: name of the transect (string)
 		"""
 		self.colors = colors
 		self.lons = [-loc_i[0], -loc_f[0]]
@@ -21,6 +22,7 @@ class Vessel_fishing:
 		self.time = time_stamp
 		self.species = species
 		self.mass_fished = mass_fished
+		self.transect = transect
 
 		# Sets the orientation of the vessel
 		if self.lats[0] < self.lats[-1]:
@@ -36,7 +38,7 @@ class Vessel_fishing:
 		:return: plots a transect of vessel fishing
 		"""
 		new_lons = [lon + lon_shift for lon in self.lons]
-		a.plot(new_lons, self.lats, transform = ccrs.Geodetic(), label = self.time.strftime("%d/%m/%Y"),
+		a.plot(new_lons, self.lats, transform = ccrs.Geodetic(), label = f"{self.time.strftime('%d/%m/%Y')} {self.transect}",
 		       ls = '--', lw = '1', marker = self.orientation, markevery = [0, - 1])
 
 	def abundance_pie_chart(self, a1, a2, vessel_loc):
@@ -75,5 +77,5 @@ class Vessel_fishing:
 
 		# --- Plot the line connecting the points ---
 		# Use the Mercator coordinates for both points
-		a1.plot([vessel_loc[0], closest_point_on_pie[0]], [vessel_loc[1], closest_point_on_pie[1]], 'k--', lw=8,
+		a1.plot([vessel_loc[0], closest_point_on_pie[0]], [vessel_loc[1], closest_point_on_pie[1]], 'k--', lw = 8,
 		        transform = a1.transData)

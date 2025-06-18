@@ -16,25 +16,33 @@ INPUT_DATA_DIR = os.path.join(BASE_DIR, 'data', 'raw')  # Renamed from RAW_DATA_
 PROCESSED_DATA_DIR = os.path.join(BASE_DIR, 'data', 'processed')
 PLOTS_DIR = os.path.join(BASE_DIR, 'plots')
 
-# --- Input Data Specific Paths ---
+# --- INPUT Data Specific Paths ---
 # These are the *inputs* to your project, which are already pre-processed outputs
 # from acoustic software like Echoview.
 
+# BoB Bathymetry 15 sec arc
+RAW_BATHY= os.path.join(INPUT_DATA_DIR, 'bob_15s_bathy.tiff')
 # SURFACE CURRENTS
 RAW_SURFACE_CURRENT = os.path.join(INPUT_DATA_DIR, 'surface_currents', 'IBI_data.mat')
 # VESSEL ACOUSTIC
-RAW_VESSEL_ECHO = os.path.join(INPUT_DATA_DIR, 'vessel_echo', '*fullwatercolumn.csv')
+RAW_VESSEL_ECHO = os.path.join(INPUT_DATA_DIR, 'vessel', 'vessel_echo')
 # VESSEL FISHING
-RAW_VESSEL_FISHING = os.path.join(INPUT_DATA_DIR, 'vessel_fishing', '*.xlsx')
+RAW_VESSEL_FISHING = os.path.join(INPUT_DATA_DIR, 'vessel', 'vessel_fishing','Selected_trawls_around_intensive_transect.xlsx')
+# VESSEL JUVENA 2022 OVERVIEW
+# Ramon Margalef (BIG)
+RAW_RADIALS_AA=os.path.join(INPUT_DATA_DIR, 'vessel','radialesAA.txt')
+# Emma Bardan (SMALL)
+RAW_RADIALS_AA=os.path.join(INPUT_DATA_DIR, 'vessel','radialesEB.txt')
+
 ###  GLIDER  ###
 # RAW GLIDER DIR
-INPUT_GLIDER_DIR = os.path.join(INPUT_DATA_DIR, 'glider')
+RAW_GLIDER_DIR = os.path.join(INPUT_DATA_DIR, 'glider')
 # MLD FILTERED
-RAW_MLD_FILTERED = os.path.join(INPUT_GLIDER_DIR, 'CTD', 'MLD_filtered.mat')
+RAW_MLD_FILTERED = os.path.join(RAW_GLIDER_DIR, 'CTD', 'MLD_filtered.mat')
 # CTD .MAT
-RAW_CTD = os.path.join(INPUT_GLIDER_DIR, 'CTD', 'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat')
+RAW_CTD = os.path.join(RAW_GLIDER_DIR, 'CTD', 'PROCESSED_data_POS_CORRECTED_above2mREMOVED_ww11.mat')
 # RAW GPS
-RAW_GPS = os.path.join(INPUT_GLIDER_DIR, 'glider.gps.csv')
+RAW_GPS = os.path.join(RAW_GLIDER_DIR, 'glider.gps.csv')
 
 # --- Output File Names (for processed data, visualization-ready) ---
 # SURFACE CURRENTS
@@ -43,12 +51,12 @@ FILT_SURFACE_CURRENTS = os.path.join(PROCESSED_DATA_DIR, 'surface_currents', 'IB
 # Filtered and daily averaged currents
 AVG_FILT_SURFACE_CURRENTS = os.path.join(PROCESSED_DATA_DIR, 'surface_currents', 'IBI_data_filt_avg', '.pkl')
 # VESSEL ACOUSTIC
-PROCESSED_VESSEL_ECHO = os.path.join(PROCESSED_DATA_DIR, 'vessel_echo', '*.pkl')
+VESSEL_ECHO = os.path.join(PROCESSED_DATA_DIR, 'vessel_echo')
 # VESSEL FISHING
 # Hauls data
-VESSEL_HAULS = os.path.join(PROCESSED_DATA_DIR, 'haul_*.pkl')
+VESSEL_HAULS = os.path.join(PROCESSED_DATA_DIR, 'vessel_fishing')
 # Colour palette assigning a color per fish species
-VESSEL_COLOR_PALETTE = os.path.join(PROCESSED_DATA_DIR, 'color_palette.pkl')
+VESSEL_COLOR_PALETTE = os.path.join(PROCESSED_DATA_DIR, 'vessel_fishing','color_palette.pkl')
 ###  GLIDER  ###
 # PROCESSED GLIDER DIR
 PROCESSED_GLIDER_DIR = os.path.join(PROCESSED_DATA_DIR, 'glider')
@@ -59,11 +67,17 @@ PROCESSED_GLIDER_ECHO = os.path.join(PROCESSED_GLIDER_DIR, 'echosounder', 'all_a
 
 # --- Plot File Names (.png) ---
 # SURFACE OCEANIC CURRENTS MAPS
-SURFACE_OCEANIC_CURRENTS_MAPS=os.path.join(PLOTS_DIR, 'surface_oceanic_currents')
-
+SURFACE_OCEANIC_CURRENTS_MAPS = os.path.join(PLOTS_DIR, 'surface_oceanic_currents')
+SAMPLING_EFFORTS = os.path.join(PLOTS_DIR, 'map_sampling_effort.png')
 
 # --- Geographic and Temporal Bounds ---
-# Define the region of interest for the Southeast Bay of Biscay
+# Define the regions of interest for the Southeast Bay of Biscay
+BAY_OF_BISCAY={
+	'min_lat': 43,
+	'max_lat': 48,
+	'min_lon': -6,
+	'max_lon': 0.5
+}
 # Adjust these coordinates as precisely as needed for your study area
 BAY_OF_BISCAY_SE_BOUNDS = {
 	'min_lat': 43.2,

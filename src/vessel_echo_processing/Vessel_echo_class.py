@@ -19,7 +19,7 @@ class Vessel_echo:
 			towards = 'v'
 		self.orientation = towards
 
-	def plot_transect(self, a2,lon_shift):
+	def plot_transect(self, a2,lon_shift=0):
 		"""
 		:type fig: figure
 		:param a2: Child axis

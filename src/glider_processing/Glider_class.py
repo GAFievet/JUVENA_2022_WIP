@@ -51,11 +51,10 @@ class Glider:
 		cbar.ax.add_patch(rect)
 
 		# Calculate center coordinates of the centre of the rectangle
-		x_center = rect.get_x() + rect.get_width() / 2
+		x_center = rect.get_x() + rect.get_width() / 2 + 0.05
 		y_center = rect.get_y() + rect.get_height() / 2
-
 		# Create text object
-		text = Text(x_center, y_center, 'Storm', ha = 'center', va = 'center', color = 'red', fontsize = 11,
+		text = Text(x_center, y_center, 'Gale', ha = 'center', va = 'center', color = 'red', fontsize = 10,
 		            rotation = 90)
 
 		# Add text to the plot

@@ -1,6 +1,7 @@
 import pandas as pd
 import pickle
 import os
+from src import config
 
 
 def extract_vessel_fishing_data(file, saving_path, haul):
@@ -8,7 +9,8 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 	:param haul: type int, Haul number to retreive
 	:param saving_path: path where to save the .pkl file
 	:param file: string of the path of an Excel extraction_file containing  vessel transects vessel_mat
-	:return: list [longitudes,latitudes,time_stamps, species, mass fished, colors] (i.e., extracts and compute args for
+	:return: dict {longitudes,latitudes,time_stamps, transect, species, mass fished, colors} (i.e., extracts and
+	compute args for
 	plot_vessel_transect class)
 	"""
 	df = pd.read_excel(file)
@@ -34,7 +36,7 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 		species = df.columns[fish_i_f[0]:fish_i_f[1]]
 
 		# Import colors for pie charts
-		with open(r'/vessel_fishing/color_palette.pkl', 'rb') as f:
+		with open(config.VESSEL_COLOR_PALETTE, 'rb') as f:
 			colors = pickle.load(f)
 
 		# Get fishes mass captured in a list and convert nan into 0 and name list aswell
@@ -45,7 +47,7 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 
 		fishing_dict = {
 			'loc_i': loc_i, 'loc_f': loc_f, 'date': date, 'species': species,
-			'masses': masses_fished, 'color palette': colors
+			'masses': masses_fished, 'color palette': colors, 'transect': haul_row['Radial'].iloc[0]
 		}
 		#  loc_i and loc_f are inital and end location of the vessel conducting the trawl formatted as [longitude,
 		#  latitude].
@@ -54,7 +56,7 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 		# during the trawl.
 
 		# Save the dictionary to an extraction_file
-		with open(os.path.join(saving_path, f'haul_{haul}' + '.pkl'), 'wb') as f:
+		with open(os.path.join(saving_path, f'haul_{fishing_dict['transect']}_{haul}' + '.pkl'), 'wb') as f:
 			# noinspection PyTypeChecker
 			pickle.dump(fishing_dict, f)
 
@@ -65,11 +67,16 @@ def extract_vessel_fishing_data(file, saving_path, haul):
 
 
 if __name__ == "__main__":
-	file_name = r'../../data/vessel_fishing/fishing operatiions V6 V8 V10.xlsx'
-	save = r'../data/vessel_fishing'
-	example_dict = extract_vessel_fishing_data(file_name, save, 9001)
-	# with open(r'C:\Users\G to the A\PycharmProjects\Paper\vessel_fishing\haul_9048.pkl', 'rb') as f:
-	# 	example_dict = pickle.load(f)
+	haul_xlsx = config.RAW_VESSEL_FISHING
+	save = config.VESSEL_HAULS
+	# Collect all haul numbers
+	df = pd.read_excel(haul_xlsx)
+	haul_list = df['HAUL'].tolist()
+	for haul in haul_list:
+		example_dict = extract_vessel_fishing_data(haul_xlsx, save, haul)
+
+	with open(r'C:\Users\G to the A\PycharmProjects\Paper\data\processed\vessel_fishing\haul_9231.pkl', 'rb') as f:
+		example_dict = pickle.load(f)
 	# print(example_dict)
 	# print(type(example_dict))
 	# print(example_dict['color palette'])

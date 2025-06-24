@@ -134,13 +134,13 @@ def fine_tune_acoustic_profile(ax, cbar, date):
 	ax[1].get_legend_handles_labels()  # dummy call to update legend
 	ax[1].text(x = date[-1], y = -200, s = 'Shelf break', ha = 'right', va = 'bottom')
 
-	# Add storm indication
-	storm_start = datetime.strptime("26/09/2022 00:00:00", "%d/%m/%Y %H:%M:%S")
-	storm_end = datetime.strptime("30/09/2022 23:59:59", "%d/%m/%Y %H:%M:%S")
+	# Add gale indication
+	gale_start = datetime.strptime("26/09/2022 00:00:00", "%d/%m/%Y %H:%M:%S")
+	gale_end = datetime.strptime("30/09/2022 23:59:59", "%d/%m/%Y %H:%M:%S")
 	ymin, ymax = ax[0].get_ylim()
-	l = storm_end - storm_start
-	rect = plt.Rectangle((storm_start, ymin), l, abs(ymax - ymin), facecolor = 'blue', alpha = 0.1, label = "Gale")
-	ax[0].add_patch(rect)  # Red frame
+	l = gale_end - gale_start
+	rect = plt.Rectangle((gale_start, ymin), l, abs(ymax - ymin), facecolor = 'blue', alpha = 0.1, label = "Gale")
+	ax[0].add_patch(rect)
 
 	# Combine legends from both axes
 	lines1, labels1 = ax[0].get_legend_handles_labels()

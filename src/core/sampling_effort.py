@@ -132,6 +132,7 @@ ax1.set_extent(
 # plt.subplots_adjust(left = 0.25)
 ax1.legend(bbox_to_anchor = (0.7, -0.4), loc = 'lower center', borderaxespad = 0., ncol = 3)
 plt.subplots_adjust(bottom = 0.2)
+# endregion
 
 #region Define gridline properties
 # gl = ax1.gridlines(crs = ccrs.PlateCarree(), draw_labels = True, linewidth = 1, color = 'gray', alpha = 0.5,

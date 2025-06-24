@@ -24,6 +24,8 @@ PLOTS_DIR = os.path.join(BASE_DIR, 'plots')
 RAW_BATHY= os.path.join(INPUT_DATA_DIR, 'gebco_2024_n48.0_s43.0_w-8.0_e-1.0.tif')
 # SURFACE CURRENTS
 RAW_SURFACE_CURRENT = os.path.join(INPUT_DATA_DIR, 'surface_currents', 'IBI_data.mat')
+# BUOY DATA
+RAW_BUOY_DATA=os.path.join(INPUT_DATA_DIR, 'surface_currents', 'bilbao_buoy.csv')
 # VESSEL ACOUSTIC
 RAW_VESSEL_ECHO = os.path.join(INPUT_DATA_DIR, 'vessel', 'vessel_echo')
 # VESSEL FISHING
@@ -73,6 +75,7 @@ SURFACE_OCEANIC_CURRENTS_MAPS = os.path.join(PLOTS_DIR, 'surface_oceanic_current
 SAMPLING_EFFORTS = os.path.join(PLOTS_DIR, 'map_sampling_effort.png')
 JUVENA2022_OVERVIEW=os.path.join(PLOTS_DIR, 'map_JUVENA2022_overview.png')
 SURVEY_PROFILE=os.path.join(PLOTS_DIR, 'survey_profile.png')
+BUOY_QUIVER=os.path.join(PLOTS_DIR, 'wind_current_quiver.png')
 # --- Geographic and Temporal Bounds ---
 # Define the regions of interest for the Southeast Bay of Biscay
 BAY_OF_BISCAY={

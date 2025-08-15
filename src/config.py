@@ -87,9 +87,9 @@ BAY_OF_BISCAY={
 # Adjust these coordinates as precisely as needed for your study area
 BAY_OF_BISCAY_SE_BOUNDS = {
 	'min_lat': 43.2,
-	'max_lat': 44.35,
-	'min_lon': -3.5,
-	'max_lon': -1.8
+	'max_lat': 44.90,
+	'min_lon': -3.80,
+	'max_lon': -1.80
 }
 
 # Define the typical survey period or analysis window

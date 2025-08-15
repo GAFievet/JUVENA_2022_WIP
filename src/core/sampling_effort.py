@@ -118,6 +118,12 @@ glider = Glider(GPS_lons, GPS_lats, GPS_dates)
 glider.plot_transect(fig, ax1)
 # endregion
 
+# region ###### BILBAO-VIZCAYA BUOY ######
+
+ax1.plot(-3.03, 43.62, 'kd', markersize=6, label="Bilbao-Vizcaya buoy", transform = ccrs.Geodetic())
+
+# endregion
+
 # region ###### TUNING PLOT ######
 # Set map extent to the south-eastern Bay of Biscay
 ax1.set_extent(

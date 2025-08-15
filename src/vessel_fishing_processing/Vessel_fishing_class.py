@@ -39,7 +39,7 @@ class Vessel_fishing:
 		"""
 		new_lons = [lon + lon_shift for lon in self.lons]
 		a.plot(new_lons, self.lats, transform = ccrs.Geodetic(), label = f"{self.time.strftime('%d/%m/%Y')} {self.transect}",
-		       ls = '--', lw = '1', marker = self.orientation, markevery = [0, - 1])
+		       ls = '--', lw = '1', marker = self.orientation, markevery = [0, - 1],markerfacecolor='none')
 
 	def abundance_pie_chart(self, a1, a2, vessel_loc):
 		"""

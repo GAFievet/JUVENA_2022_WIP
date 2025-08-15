@@ -90,7 +90,7 @@ def calculate_vector_components(df: pd.DataFrame) -> pd.DataFrame:
 	return df
 
 
-def plot_quiver_data(df: pd.DataFrame, save_path: str, dpi: int):
+def plot_quiver_data(df: pd.DataFrame, save_path: str, dpi: int, sample_interval: int):
 	"""
 	Plots wind and current vectors using quiver plots.
 
@@ -98,13 +98,18 @@ def plot_quiver_data(df: pd.DataFrame, save_path: str, dpi: int):
 		df (pd.DataFrame): The DataFrame containing the U and V components, as well as timestamps.
 		save_path (str): The path to save the figure.
 		dpi (int): The resolution (dots per inch) of the saved figure.
+		sample_interval (int): Interval to sample data for plotting. A value of 1 means no sampling (plot all).
 	"""
 	# print(f"Creating quiver plot and saving to: {save_path}")
+
+	# Sample the DataFrame
+	df_sampled = df.iloc[::sample_interval, :]
+
 	# Create the figure and subplots
 	fig, (ax1, ax2) = plt.subplots(2, 1, figsize = (15, 12))
 	# Plot wind vectors in the top subplot
 	# Q1 is the Quiver object to allow adding a scale key
-	Q1 = ax1.quiver(df['Timestamp'], np.zeros(len(df)), df['wind_u'], df['wind_v'],
+	Q1 = ax1.quiver(df_sampled['Timestamp'], np.zeros(len(df_sampled)), df_sampled['wind_u'], df_sampled['wind_v'],
 	                color = 'k', scale = 5, width = 0.002, scale_units = "inches", headlength = 1, headwidth = 1,
 	                headaxislength
 	                = 1)
@@ -115,12 +120,13 @@ def plot_quiver_data(df: pd.DataFrame, save_path: str, dpi: int):
 	ax1.grid(True, linestyle = '--', alpha = 0.7)  # Add a grid for better readability
 
 	# Add a scale key for wind
-	ax1.quiverkey(Q1, X = 0.95, Y = 0.85, U = 2, label = '2 m/s Wind', labelpos = 'W', coordinates = 'axes',
+	ax1.quiverkey(Q1, X = 0.9, Y = 0.85, U = 6, label = '5 m/s Wind', labelpos = 'W', coordinates = 'axes',
 	              fontproperties = fm.FontProperties(size = 12))
 
 	##### CURRENTS #####
 	# Plot current vectors in the bottom subplot
-	Q2 = ax2.quiver(df['Timestamp'], np.zeros(len(df)), df['current_u'], df['current_v'],
+	Q2 = ax2.quiver(df_sampled['Timestamp'], np.zeros(len(df_sampled)), df_sampled['current_u'],
+	                df_sampled['current_v'],
 	                color = 'k', scale = 0.3, width = 0.002, scale_units = "inches", headlength = 1, headwidth = 1,
 	                headaxislength = 1)
 
@@ -153,8 +159,10 @@ def plot_quiver_data(df: pd.DataFrame, save_path: str, dpi: int):
 	ax2.sharex(ax1)
 
 	# Legend
-	ax1.legend(loc = 'upper right', framealpha = 1, facecolor = "white", edgecolor = 'black', fancybox = True)
-	ax2.legend(loc = 'upper right', framealpha = 1, facecolor = "white", edgecolor = 'black', fancybox = True)
+	ax1.legend(loc = 'upper right', framealpha = 1, facecolor = "white", edgecolor = 'black', fancybox = True,
+	           fontsize = config.PLOT_LABEL_FONTSIZE)
+	ax2.legend(loc = 'upper right', framealpha = 1, facecolor = "white", edgecolor = 'black', fancybox = True,
+	           fontsize = config.PLOT_LABEL_FONTSIZE)
 
 	plt.setp(ax2.get_xticklabels(), visible = False)
 	# Save the figure
@@ -177,7 +185,9 @@ def main():
 	df = calculate_vector_components(df)
 
 	# 3. Plot the data and save the figure using paths and DPI from config
-	plot_quiver_data(df, config.BUOY_QUIVER, config.DEFAULT_PLOT_DPI)
+	# Adjust sample_interval to plot fewer arrows. For example, sample_interval=2 will plot every other arrow.
+	# sample_interval=5 will plot every 5th arrow.
+	plot_quiver_data(df, config.BUOY_QUIVER, config.DEFAULT_PLOT_DPI, sample_interval = 3)
 
 
 # print("Wind and current data analysis completed.")
